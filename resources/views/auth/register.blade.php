@@ -1,9 +1,10 @@
 <x-body>
-    @vite('resources/css/login.css')
+    @vite('resources/css/authForm.css')
     <div>
         <form method="post" action="{{route('register')}}">
+            @csrf
             <input placeholder="Name..."
-                type="text" 
+                type="text"
                 id='name'
                 name='name'
                 required>
@@ -24,9 +25,11 @@
                 type="password"
                 id="password_confirmation"
                 name="password_confirmation"
-                required> 
-        
+                required>
+
             <button type="submit">Register</button>
+
+            <a href="/Login">Have an account?</a>
         </form>
     </div>
 </x-body>

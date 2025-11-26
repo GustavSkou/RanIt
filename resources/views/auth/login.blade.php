@@ -1,7 +1,8 @@
 <x-body>
-    @vite('resources/css/login.css')
+    @vite('resources/css/authForm.css')
     <div>
         <form method='POST' action='{{route('login')}}'>
+            @csrf
             <input placeholder="Email..."
                 type="text"
                 id="email"
@@ -15,6 +16,8 @@
                 required>
 
             <button type="submit">Login</button>
+
+            <a href="/Register">Need an account?</a>
         </form>
     </div>
 </x-body>

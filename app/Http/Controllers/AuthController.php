@@ -15,10 +15,14 @@ class AuthController extends Controller
             'password' => 'required | string'
         ]);
 
-        if (Auth($validated)) {
+        if (Auth::attempt($validated)) {
             $request->session()->regenerate();
-            return redirect()->route('activity.index');
+            return redirect()->route('show.upload');
         }
+
+        return back()->withErrors([
+            'email' => 'The provided credentials do not match our records.',
+        ])->withInput();
     }
 
     function register(Request $request)
@@ -26,21 +30,22 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:50',
             'email' => 'required|email',
-            'password' => 'required|string|min:5|confirmed'
+            'password' => 'required|string|min:1|confirmed'
         ]);
 
         $user = User::create($validated);
         Auth::login($user);
-        redirect()->route('activity.index');
+        //redirect()->route('activity.index');
+        return redirect()->route('show.upload');
     }
 
     function ShowLogin()
     {
-        return view('login');
+        return view('auth.login');
     }
 
     function ShowRegister()
     {
-        return view('register');
+        return view('auth.register');
     }
 }

@@ -1,9 +1,10 @@
 /* Login Form Styles */
 body {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(50deg, #c6d483 0%, #d0dd5e 100%);
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100vh;
 }
 
 div {
