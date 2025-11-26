@@ -5,16 +5,21 @@ namespace App\Http\Controllers;
 use App\Models\Activity;
 use App\Models\point;
 use FFI\Exception;
-use GuzzleHttp\Psr7\Message;
 use Illuminate\Http\Request;
-use Illuminate\Session\FileSessionHandler;
-use SebastianBergmann\CodeCoverage\Util\Xml;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use SebastianBergmann\Environment\Console;
 
 class ActivityController extends Controller
 {
+    public function Index()
+    {
+        $userId = Auth::user()->id;
+
+        $activities = Activity::where('user_id', $userId)->paginate(25);
+
+        return view('activities')->with('activities', $activities);
+    }
+
     public function ShowUpload()
     {
         return view('file_upload');

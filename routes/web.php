@@ -5,21 +5,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
 Route::get('/', function () {
-    return redirect()->route('show.login');
+    return redirect()->route('dashboard');
 });
 
 
 
 
-
-
-Route::get('/Register', [AuthController::class, 'ShowRegister'])->name('show.register');
-Route::get('/Login', [AuthController::class, 'ShowLogin'])->name('show.login');
-
-Route::post('/Login', [AuthController::class, 'Login'])->name('login');
-Route::post('/Register', [AuthController::class, 'Register'])->name('register');
+Route::get('/register', [AuthController::class, 'ShowRegister'])->name('show.register');
+Route::get('/login', [AuthController::class, 'ShowLogin'])->name('show.login');
+Route::post('/login', [AuthController::class, 'Login'])->name('login');
+Route::post('/register', [AuthController::class, 'Register'])->name('register');
 
 
 
-Route::get('/Upload', [ActivityController::class, 'ShowUpload'])->name('show.upload');
-Route::post('/Upload', [ActivityController::class, 'Upload'])->name('upload');
+Route::get('/dashboard', [ActivityController::class, 'Index'])->name('dashboard');
+Route::get('/upload', [ActivityController::class, 'ShowUpload'])->name('show.upload');
+Route::post('/upload', [ActivityController::class, 'Upload'])->name('upload');

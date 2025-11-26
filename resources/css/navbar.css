@@ -1,0 +1,29 @@
+nav {
+    background-color: white;
+    
+    display: flex;
+    flex-direction: row;
+    height: 55px;
+    align-items: center;
+    justify-content: space-between;
+    margin-left: 17%;
+    margin-right: 17%;
+}
+
+a {
+    padding-left: 12px;
+    padding-right: 12px;
+    text-decoration: none;
+    color: black;
+}
+
+.left {
+    display: flex;
+    align-items: center;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
