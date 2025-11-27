@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string("name");
+            $table->string('type')->nullable();
+            $table->string("device")->nullable();
+            $table->float("distance")->nullable();
+            $table->float("average_speed")->nullable();
+            $table->float("average_heart_rate")->nullable();
             $table->foreignId("user_id")->constrained("users");
         });
     }

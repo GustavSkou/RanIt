@@ -17,6 +17,7 @@ return new class extends Migration
             $table->float("latitude");
             $table->float("longitude");
             $table->float("elevation");
+            $table->integer('heart_rate')->nullable();
             $table->timestamp("timestamp");
             $table->foreignId("activity_id")->constrained("activities");
         });
