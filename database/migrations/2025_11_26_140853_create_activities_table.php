@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->string("device")->nullable();
             $table->float("distance")->nullable();
+            $table->timestamp('start_time')->nullable();
+            $table->integer('duration')->nullable();        // duration in seconds
             $table->float("average_speed")->nullable();
             $table->float("average_heart_rate")->nullable();
             $table->foreignId("user_id")->constrained("users");

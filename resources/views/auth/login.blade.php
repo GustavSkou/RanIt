@@ -17,7 +17,7 @@
 
             <button type="submit">Login</button>
 
-            <a href="/Register">Need an account?</a>
+            <a href="/register">Need an account?</a>
         </form>
     </div>
 </x-body>

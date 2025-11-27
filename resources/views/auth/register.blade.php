@@ -29,7 +29,7 @@
 
             <button type="submit">Register</button>
 
-            <a href="/Login">Have an account?</a>
+            <a href="/login">Have an account?</a>
         </form>
     </div>
 </x-body>

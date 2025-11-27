@@ -1,0 +1,56 @@
+.activity-container {
+    margin-bottom: 50px;
+}
+
+.activity-name {
+    padding: 0px;
+    font-size: x-large;
+}
+.user-name {
+    padding: 0px;
+}
+
+p {
+    font-size: small;
+}
+time {
+    font-size: small;
+}
+
+/*TOP PANEL*/
+.top-panel {
+    display: flex;
+    flex-direction: row;
+}
+.top-panel div {
+    display: flex;
+    flex-direction: column;
+}
+
+/* MIDDEL PANEL */
+.stat-ul {
+    display: flex;
+    flex-direction: row;
+}
+.stat-ul li {
+    margin-right: 32px;
+}
+.stat-ul li div{
+    font-size: larger;
+}
+
+.middle-panel {
+    display: flex;
+    flex-direction: row;
+}
+
+.middle-panel {
+    display: flex;
+    flex-direction: row;
+}
+
+.img {
+    height: 24px;
+    width: 24px;
+    margin-right: 24px;
+}

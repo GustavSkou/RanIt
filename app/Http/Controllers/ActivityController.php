@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\point;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,12 @@ class ActivityController extends Controller
 {
     public function Index()
     {
-        $userId = Auth::user()->id;
+        try {
+            $userId = Auth::user()->id;
+        } catch (Exception $ex) {
+            $userId = 1;
+        }
+
 
         $activities = Activity::where('user_id', $userId)->paginate(25);
 
@@ -51,6 +57,8 @@ class ActivityController extends Controller
             $activity->distance = $pointsSummary['distance'];
             $activity->average_speed = $pointsSummary['average_speed'];
             $activity->average_heart_rate = $pointsSummary['average_heart_rate'];
+            $activity->start_time = $pointsSummary['start_time'];
+            $activity->duration = $pointsSummary['duration'];
             $activity->save();
 
             Log::info('Upload completed successfully', [
@@ -88,6 +96,7 @@ class ActivityController extends Controller
         $latitude2 = null;
         $longitude2 = null;
         $time2 = null;
+        $firstTime = null;
 
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $segment) {
@@ -97,6 +106,10 @@ class ActivityController extends Controller
                     $elevation = (float) $point->ele;
                     $timeString = (string) $point->time;
                     $time = new \DateTime($timeString);
+
+                    if ($firstTime == null) {
+                        $firstTime = $time;
+                    }
 
                     $heartRate = null;
                     if (isset($point->extensions)) {
@@ -137,8 +150,15 @@ class ActivityController extends Controller
             }
         }
 
+        $durationInSeconds = null;
+        if ($firstTime != null) {
+            $durationInSeconds = $time2 ? $time2->getTimestamp() - $firstTime->getTimestamp() : null;
+        }
+
         return [
             'distance' => $totalDistance,
+            'duration' => $durationInSeconds,
+            'start_time' => $firstTime,
             'average_speed' => $speedPoints > 0 ? $accumulatedSpeed / $speedPoints : null,
             'average_heart_rate' => $hrPoints > 0 ? $accumulatedHeartRate / $hrPoints : null
         ];
