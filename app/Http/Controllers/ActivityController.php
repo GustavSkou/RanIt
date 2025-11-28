@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Activity;
-use App\Models\point;
+use App\Models\Point;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,6 +29,16 @@ class ActivityController extends Controller
     {
         return view('file_upload');
     }
+
+    public function ShowEdit(Activity $activity)
+    {
+        $points = Point::where('activity_id', $activity->id)->get();
+        return view('edit_activity')
+            ->with('activity', $activity)
+            ->with('points', $points);
+    }
+
+    public function Edit(Request $request) {}
 
     public function Upload(Request $request)
     {
@@ -61,11 +71,15 @@ class ActivityController extends Controller
             $activity->duration = $pointsSummary['duration'];
             $activity->save();
 
+            $points = $pointsSummary['points'];
+
             Log::info('Upload completed successfully', [
                 'activity_id' => $activity->id,
             ]);
 
-            return redirect()->route('show.upload')->with('success', 'File uploaded successfully');
+            return redirect()
+                ->route('show.editActivity', $activity)
+                ->with('points', $points);
         } catch (\Exception $e) {
             Log::error('Upload failed', [
                 'error' => $e->getMessage(),
@@ -97,6 +111,8 @@ class ActivityController extends Controller
         $longitude2 = null;
         $time2 = null;
         $firstTime = null;
+
+        $points = [];
 
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $segment) {
@@ -133,7 +149,7 @@ class ActivityController extends Controller
                         }
                     }
 
-                    point::create([
+                    $point = Point::create([
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                         'elevation' => $elevation,
@@ -142,6 +158,7 @@ class ActivityController extends Controller
                         'heart_rate' => $heartRate,     // is nullable
                         'activity_id' => $activityId
                     ]);
+                    array_push($points, $point);
 
                     $latitude2 = $latitude;
                     $longitude2 = $longitude;
@@ -160,7 +177,8 @@ class ActivityController extends Controller
             'duration' => $durationInSeconds,
             'start_time' => $firstTime,
             'average_speed' => $speedPoints > 0 ? $accumulatedSpeed / $speedPoints : null,
-            'average_heart_rate' => $hrPoints > 0 ? $accumulatedHeartRate / $hrPoints : null
+            'average_heart_rate' => $hrPoints > 0 ? $accumulatedHeartRate / $hrPoints : null,
+            'points' => $points
         ];
     }
 
