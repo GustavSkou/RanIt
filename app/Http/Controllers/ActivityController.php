@@ -6,8 +6,10 @@ use App\Models\Activity;
 use App\Models\Point;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ActivityController extends Controller
 {
@@ -73,13 +75,15 @@ class ActivityController extends Controller
 
             $points = $pointsSummary['points'];
 
+            $this->generateActivityMapImage($activity, $points);
+
             Log::info('Upload completed successfully', [
                 'activity_id' => $activity->id,
             ]);
 
             return redirect()
-                ->route('show.editActivity', $activity)
-                ->with('points', $points);
+                ->route('show.editActivity', $activity);
+            //->with('points', $points);
         } catch (\Exception $e) {
             Log::error('Upload failed', [
                 'error' => $e->getMessage(),
@@ -158,7 +162,7 @@ class ActivityController extends Controller
                         'heart_rate' => $heartRate,     // is nullable
                         'activity_id' => $activityId
                     ]);
-                    array_push($points, $point);
+                    array_push($points, [$point->latitude, $point->longitude]);
 
                     $latitude2 = $latitude;
                     $longitude2 = $longitude;
@@ -180,6 +184,39 @@ class ActivityController extends Controller
             'average_heart_rate' => $hrPoints > 0 ? $accumulatedHeartRate / $hrPoints : null,
             'points' => $points
         ];
+    }
+
+    private function generateActivityMapImage(Activity $activity, $points)
+    {
+        if (empty($points)) {
+            return;
+        }
+
+        // Create output directory if it doesn't exist
+
+        if (Storage::disk('public')->exists('file.jpg')) {
+            // ...
+        }
+
+        $outputDir = storage_path('app/public/maps');
+        if (!file_exists($outputDir)) {
+            mkdir($outputDir, 0755, true);
+        }
+
+        $outputPath = $outputDir . "/activity-{$activity->id}.png";
+        $pointsJson = json_encode($points);
+
+        // Execute the command
+        // This will also save the image in storage
+        Artisan::call('map:generate', [
+            'pointsJson' => $pointsJson,
+            'outputPath' => $outputPath,
+            '--width' => 800,
+            '--height' => 600
+        ]);
+
+        $activity->map_image_path = "maps/activity-{$activity->id}.png";
+        $activity->save();
     }
 
     private function Distance(float $lat1, float $lon1, float $lat2, float $lon2): float
