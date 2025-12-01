@@ -118,6 +118,9 @@ class ActivityController extends Controller
 
         $points = [];
 
+        // chunk the dataset if it is larger than this
+        $chunkSize = 5000;
+
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $segment) {
                 foreach ($segment->trkpt as $point) {
@@ -153,22 +156,33 @@ class ActivityController extends Controller
                         }
                     }
 
-                    $point = Point::create([
+                    $point = [
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                         'elevation' => $elevation,
                         'timestamp' => $timeString,
-                        'speed' => $speed,              // is nullable
+                        //'speed' => $speed,              // is nullable
                         'heart_rate' => $heartRate,     // is nullable
                         'activity_id' => $activityId
-                    ]);
-                    array_push($points, [$point->latitude, $point->longitude]);
+                    ];
+
+                    array_push($points, $point);
+
+                    if (count($points) >= $chunkSize) {
+                        Point::insert($points);
+                        $points = [];
+                    }
 
                     $latitude2 = $latitude;
                     $longitude2 = $longitude;
                     $time2 = $time;
                 }
             }
+        }
+
+        // insert the rest of the points
+        if (count($points) > 0) {
+            Point::insert($points);
         }
 
         $durationInSeconds = null;
@@ -188,16 +202,14 @@ class ActivityController extends Controller
 
     private function generateActivityMapImage(Activity $activity, $points)
     {
+        $points = array_map(function ($point) {
+            return [$point['latitude'], $point['longitude']];
+        }, $points);
+
         if (empty($points)) {
             Log::info("Map image generation stopped, no points");
             return;
         }
-
-        // Create output directory if it doesn't exist
-
-        /*if (Storage::disk('public')->put()) {
-            // ...
-        }*/
 
         $mapOutputDir = storage_path('app/public/maps');
         if (!file_exists($mapOutputDir)) {
