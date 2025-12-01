@@ -116,10 +116,12 @@ class ActivityController extends Controller
         $time2 = null;
         $firstTime = null;
 
-        $points = [];
+
+        $allPoints = [];
 
         // chunk the dataset if it is larger than this
         $chunkSize = 5000;
+        $chunkPoints = [];
 
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $segment) {
@@ -166,11 +168,12 @@ class ActivityController extends Controller
                         'activity_id' => $activityId
                     ];
 
-                    array_push($points, $point);
+                    array_push($allPoints, $point);
+                    array_push($chunkPoints, $point);
 
-                    if (count($points) >= $chunkSize) {
-                        Point::insert($points);
-                        $points = [];
+                    if (count($chunkPoints) >= $chunkSize) {
+                        Point::insert($chunkPoints);
+                        $chunkPoints = [];
                     }
 
                     $latitude2 = $latitude;
@@ -181,8 +184,8 @@ class ActivityController extends Controller
         }
 
         // insert the rest of the points
-        if (count($points) > 0) {
-            Point::insert($points);
+        if (count($chunkPoints) > 0) {
+            Point::insert($chunkPoints);
         }
 
         $durationInSeconds = null;
@@ -196,7 +199,7 @@ class ActivityController extends Controller
             'start_time' => $firstTime,
             'average_speed' => $speedPoints > 0 ? $accumulatedSpeed / $speedPoints : null,
             'average_heart_rate' => $hrPoints > 0 ? $accumulatedHeartRate / $hrPoints : null,
-            'points' => $points
+            'points' => $allPoints
         ];
     }
 
