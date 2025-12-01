@@ -1,8 +1,7 @@
-const puppeteer = require('puppeteer');
-const fs = require('fs');
+import { launch } from 'puppeteer';
 
 async function generateMapImage(points, outputPath, options = {}) {
-    const browser = await puppeteer.launch();
+    const browser = await launch();
     const page = await browser.newPage();
     
     // Set viewport size
@@ -62,18 +61,12 @@ async function generateMapImage(points, outputPath, options = {}) {
     
     // Wait for map to load
     await page.waitForFunction(() => window.mapReady === true);
-    await page.waitForTimeout(1000); // Additional wait for tiles to load
-    
-    // Take screenshot
     await page.screenshot({ 
-        path: outputPath,
-        type: 'png',
-        fullPage: false
-    });
-    
-    await browser.close();
-    return outputPath;
+            path: outputPath,
+            type: 'png',
+            fullPage: false
+        });
 }
 
-// Export for use
-module.exports = { generateMapImage };
+// Export as named export
+export { generateMapImage };

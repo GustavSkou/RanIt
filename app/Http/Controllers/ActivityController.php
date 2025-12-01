@@ -189,34 +189,57 @@ class ActivityController extends Controller
     private function generateActivityMapImage(Activity $activity, $points)
     {
         if (empty($points)) {
+            Log::info("Map image generation stopped, no points");
             return;
         }
 
         // Create output directory if it doesn't exist
 
-        if (Storage::disk('public')->exists('file.jpg')) {
+        /*if (Storage::disk('public')->put()) {
             // ...
+        }*/
+
+        $mapOutputDir = storage_path('app/public/maps');
+        if (!file_exists($mapOutputDir)) {
+            mkdir($mapOutputDir, 0755, true);
+        }
+        $tempDir = storage_path('app/temp');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
         }
 
-        $outputDir = storage_path('app/public/maps');
-        if (!file_exists($outputDir)) {
-            mkdir($outputDir, 0755, true);
-        }
+        $mapFileName = "/activity-{$activity->id}.png";
+        $mapOutputPath = $mapOutputDir . $mapFileName;
 
-        $outputPath = $outputDir . "/activity-{$activity->id}.png";
+        // create temp json file for points and put the point in there
+        $tempPointsFile = "/points-{$activity->id}.json";
+        $pointFileOutputPath = $tempDir . $tempPointsFile;
         $pointsJson = json_encode($points);
+        file_put_contents($pointFileOutputPath, $pointsJson);
 
-        // Execute the command
-        // This will also save the image in storage
-        Artisan::call('map:generate', [
-            'pointsJson' => $pointsJson,
-            'outputPath' => $outputPath,
-            '--width' => 800,
-            '--height' => 600
-        ]);
 
-        $activity->map_image_path = "maps/activity-{$activity->id}.png";
-        $activity->save();
+        try {
+            // Execute the command
+            // This will also save the image in storage
+            $response =  Artisan::call('map:generate', [
+                'pointsFilePath' => $pointFileOutputPath,
+                'outputPath' => $mapOutputPath,
+                '--width' => 800,
+                '--height' => 600
+            ]);
+
+            if ($response) {
+                $activity->map_image_path = "maps/activity-{$activity->id}.png";
+                $activity->save();
+                //Log::info("image saved", ['map_image_path' => "maps/activity-{$activity->id}.png",]);
+            } else {
+                //Log::info("Failed image save", ['activity' => $activity->id]);
+            }
+        } finally {
+            if (file_exists($pointFileOutputPath)) {
+                unlink($pointFileOutputPath);
+            }
+        }
     }
 
     private function Distance(float $lat1, float $lon1, float $lat2, float $lon2): float

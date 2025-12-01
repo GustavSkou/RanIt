@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('duration')->nullable();        // duration in seconds
             $table->float("average_speed")->nullable();
             $table->float("average_heart_rate")->nullable();
+            $table->string("map_image_path")->nullable();
             $table->foreignId("user_id")->constrained("users");
         });
     }

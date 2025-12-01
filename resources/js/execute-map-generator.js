@@ -1,8 +1,17 @@
-const { generateMapImage } = require('./map-generator.js');
+import { generateMapImage } from './map-generator.js';
+import { readFileSync } from 'fs';
 
-const [,, pointsJson, outputPath, width, height] = process.argv;
+const [,, pointsFilePath, outputPath, width, height] = process.argv;
 
-const points = JSON.parse(pointsJson);
+let points = '';
+try {
+    const pointsJson = readFileSync(pointsFilePath, 'utf8');
+    points = JSON.parse(pointsJson);
+} catch (error) {
+    console.error('Error reading points file:', error);
+    process.exit(1);
+}
+
 const options = {
     width: parseInt(width) || 800,
     height: parseInt(height) || 600

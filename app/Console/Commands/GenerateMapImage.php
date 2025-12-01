@@ -9,12 +9,26 @@ use Symfony\Component\Process\Process;
 
 class GenerateMapImage extends Command
 {
-    protected $signature = 'map:generate {pointsJson} {outputPath} {--width=800} {--height=600}';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'map:generate {pointsFilePath} {outputPath} {--width=800} {--height=600}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     protected $description = 'Generate map image from GPS points';
 
+    /**
+     * Execute the console command.
+     */
     public function handle()
     {
-        $pointsJson = $this->argument('pointsJson');
+        $pointsFilePath = $this->argument('pointsFilePath');
         $outputPath = $this->argument('outputPath');
         $width = $this->option('width');
         $height = $this->option('height');
@@ -25,18 +39,18 @@ class GenerateMapImage extends Command
         $process = new Process([
             'node',
             $nodeScript,
-            $pointsJson,
+            $pointsFilePath,
             $outputPath,
             $width,
             $height
         ]);
 
         $process->run();
-        
+
         if (!$process->isSuccessful()) {
-            Log::info('Failed to generate map image', $process->getErrorOutput());
+            Log::info('Failed to generate map image', ['error' => $process->getErrorOutput()]);
         } else {
-            Log::info('Map image generated successfully', $outputPath);
+            Log::info('Map image generated successfully', ['output path' => $outputPath]);
         }
 
         return $process->isSuccessful();
