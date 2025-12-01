@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class ActivityController extends Controller
 {
@@ -21,10 +20,13 @@ class ActivityController extends Controller
             $userId = 1;
         }
 
+        $activities = Activity::where('user_id', $userId)->orderBy('start_time', 'desc')->paginate(25);
+        $latestActivity = Activity::where('user_id', $userId)->orderBy('start_time', 'desc')->first();
 
-        $activities = Activity::where('user_id', $userId)->paginate(25);
-
-        return view('activities')->with('activities', $activities);
+        return view('activities', [
+            'activities' => $activities,
+            'latestActivity' => $latestActivity
+        ]);
     }
 
     public function ShowUpload()
@@ -115,7 +117,6 @@ class ActivityController extends Controller
         $longitude2 = null;
         $time2 = null;
         $firstTime = null;
-
 
         $allPoints = [];
 

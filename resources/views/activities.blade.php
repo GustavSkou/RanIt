@@ -1,9 +1,38 @@
-@vite(['resources\css\activities.css'])
+@vite(['resources\css\activities.css', 'resources\css\profile-side-bar.css'])
 <x-body>
     <x-nav></x-nav>
     <main>
         <div class="left-side">
+            <div class="profile-info">
+                <h1>{{Auth::user()->name}}</h1>
+                <ul>
+                    <li>
+                        <p>Following</p>
+                        <div>123</div>
+                    </li>
+                    <li>
+                        <p>Followers</p>
+                        <div>321</div>
+                    </li>
+                    <li>
+                        <p>Activities</p>
+                        <div>123</div>
+                    </li>
+                </ul>
+            </div>
 
+            <div class="week-summary">
+                <div class="latest-activity">
+                    <p>Latest activity</p>
+                    <span>{{ $latestActivity->name }}</span>
+                    <span>-</span>
+                    <span>{{ $latestActivity->date() }}</span>
+                </div>
+                <div class="activity-streak">
+                    <p>Week</p>
+                    
+                </div>
+            </div>
         </div>
 
         <div class="feat">        
@@ -14,7 +43,7 @@
                         <p>pic</p>
                     </div>
                     <div>
-                        <a class="user-name">{{ $activity->user()->name ?? 'NO NAME' }}</a>
+                        <a class="user-name">{{ $activity->user->name ?? 'NO NAME' }}</a>
 
                         @if ($activity->start_time != null)
                         <span>
@@ -50,7 +79,17 @@
                             @endif
                             @if ($activity->average_speed != null)
                             <li>
-                                <p>Pace</p>
+                                @switch($activity->type)
+                                    @case('running')
+                                        <p>Pace</p>
+                                        @break
+                                    @case('cycling')
+                                        <p>Speed</p>
+                                        @break
+                                    @default
+                                        <p>Speed</p>
+                                        @break
+                                @endswitch 
                                 <div>{{ $activity->GetFormattedAverageSpeed() }}</div>
                             </li>
                             @endif
