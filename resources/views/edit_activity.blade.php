@@ -1,15 +1,16 @@
-@vite(['resources/css/activities.css'])
+@vite(['resources/css/edit-activity.css'])
 <x-body>
     <x-nav></x-nav>
-    <div class="activity-container" id="activity-{{ $activity->id }}">
-
+    
+    <form>
         <div class="top-panel">
             <div class="img">
                 <p>pic</p>
             </div>
 
             <div>
-                <a class="user-name">{{ Auth::user()?->name ?? 'NO NAME' }}</a>
+                
+                <a class="user-name">{{ $activity->user()->name ?? 'NO NAME' }}</a>
 
                 @if ($activity->start_time != null)
                 <span>
@@ -35,7 +36,7 @@
 
             <div class="info-panel">
                 <h2>
-                    <a class="activity-name">{{$activity->name}}</a>
+                    <input class="activity-name" type="text" placeholder="{{$activity->name}}">
                 </h2>
                 <ul class="stat-ul">
                     @if ($activity->distance != null)
@@ -62,11 +63,8 @@
                 </ul>
             </div>
         </div>
-
-        <div class="map-container" id="{{ $activity->id }}">
-            
-        </div>
-
-    </div>
+    </form>
+    
+    <div class="map-container" id="{{ $activity->id }}"></div>
 
 </x-body>

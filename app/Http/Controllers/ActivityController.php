@@ -6,8 +6,10 @@ use App\Models\Activity;
 use App\Models\Point;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class ActivityController extends Controller
 {
@@ -73,13 +75,15 @@ class ActivityController extends Controller
 
             $points = $pointsSummary['points'];
 
+            $this->generateActivityMapImage($activity, $points);
+
             Log::info('Upload completed successfully', [
                 'activity_id' => $activity->id,
             ]);
 
             return redirect()
-                ->route('show.editActivity', $activity)
-                ->with('points', $points);
+                ->route('show.editActivity', $activity);
+            //->with('points', $points);
         } catch (\Exception $e) {
             Log::error('Upload failed', [
                 'error' => $e->getMessage(),
@@ -158,7 +162,7 @@ class ActivityController extends Controller
                         'heart_rate' => $heartRate,     // is nullable
                         'activity_id' => $activityId
                     ]);
-                    array_push($points, $point);
+                    array_push($points, [$point->latitude, $point->longitude]);
 
                     $latitude2 = $latitude;
                     $longitude2 = $longitude;
@@ -180,6 +184,62 @@ class ActivityController extends Controller
             'average_heart_rate' => $hrPoints > 0 ? $accumulatedHeartRate / $hrPoints : null,
             'points' => $points
         ];
+    }
+
+    private function generateActivityMapImage(Activity $activity, $points)
+    {
+        if (empty($points)) {
+            Log::info("Map image generation stopped, no points");
+            return;
+        }
+
+        // Create output directory if it doesn't exist
+
+        /*if (Storage::disk('public')->put()) {
+            // ...
+        }*/
+
+        $mapOutputDir = storage_path('app/public/maps');
+        if (!file_exists($mapOutputDir)) {
+            mkdir($mapOutputDir, 0755, true);
+        }
+        $tempDir = storage_path('app/temp');
+        if (!file_exists($tempDir)) {
+            mkdir($tempDir, 0755, true);
+        }
+
+        $mapFileName = "/activity-{$activity->id}.png";
+        $mapOutputPath = $mapOutputDir . $mapFileName;
+
+        // create temp json file for points and put the point in there
+        $tempPointsFile = "/points-{$activity->id}.json";
+        $pointFileOutputPath = $tempDir . $tempPointsFile;
+        $pointsJson = json_encode($points);
+        file_put_contents($pointFileOutputPath, $pointsJson);
+
+
+        try {
+            // Execute the command
+            // This will also save the image in storage
+            $response =  Artisan::call('map:generate', [
+                'pointsFilePath' => $pointFileOutputPath,
+                'outputPath' => $mapOutputPath,
+                '--width' => 800,
+                '--height' => 600
+            ]);
+
+            if ($response) {
+                $activity->map_image_path = "maps/activity-{$activity->id}.png";
+                $activity->save();
+                //Log::info("image saved", ['map_image_path' => "maps/activity-{$activity->id}.png",]);
+            } else {
+                //Log::info("Failed image save", ['activity' => $activity->id]);
+            }
+        } finally {
+            if (file_exists($pointFileOutputPath)) {
+                unlink($pointFileOutputPath);
+            }
+        }
     }
 
     private function Distance(float $lat1, float $lon1, float $lat2, float $lon2): float
