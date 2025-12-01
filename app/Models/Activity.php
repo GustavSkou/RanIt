@@ -20,6 +20,7 @@ class Activity extends Model
         'duration',
         'average_speed',
         'average_heart_rate',
+        'map_image_path',
         'user_id',
     ];
 

@@ -36,7 +36,7 @@ async function generateMapImage(points, outputPath, options = {}) {
             ];
             
             // Create map
-            const map = L.map('map').fitBounds(bounds, {padding: [20, 20]});
+            const map = L.map('map', { zoomControl: false }).fitBounds(bounds, {padding: [20, 20]});
             
             // Add tile layer
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -59,7 +59,7 @@ async function generateMapImage(points, outputPath, options = {}) {
     
     await page.setContent(html);
     
-    // Wait for map to load
+    // Wait for map to load and take a screenshot
     await page.waitForFunction(() => window.mapReady === true);
     await page.screenshot({ 
             path: outputPath,
