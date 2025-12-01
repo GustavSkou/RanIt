@@ -4,7 +4,7 @@
     <main>
         <div class="left-side">
             <div class="profile-info">
-                <h1>{{Auth::user()->name}}</h1>
+                <h1>{{Auth::user()->name ?? ""}}</h1>
                 <ul>
                     <li>
                         <p>Following</p>
@@ -20,7 +20,7 @@
                     </li>
                 </ul>
             </div>
-
+            @if ($latestActivity)
             <div class="week-summary">
                 <div class="latest-activity">
                     <p>Latest activity</p>
@@ -33,6 +33,7 @@
                     
                 </div>
             </div>
+            @endif
         </div>
 
         <div class="feat">        
