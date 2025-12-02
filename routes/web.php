@@ -19,6 +19,7 @@ Route::post('/register', [AuthController::class, 'Register'])->name('register');
 
 
 Route::get('/dashboard', [ActivityController::class, 'Index'])->name('dashboard');
+Route::get('/dashboard/{activity}', [ActivityController::class, 'Show'])->name('show');
 Route::get('/upload', [ActivityController::class, 'ShowUpload'])->name('show.upload');
 Route::get('/edit/{activity}', [ActivityController::class, 'ShowEdit'])->name('show.editActivity');
 

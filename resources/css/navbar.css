@@ -1,13 +1,13 @@
 nav {
-    background-color: white;
+    background-color: rgb(250, 250, 250);
     
     display: flex;
     flex-direction: row;
     height: 55px;
     align-items: center;
     justify-content: space-between;
-    margin-left: 17%;
-    margin-right: 17%;
+    padding-left: 17%;
+    padding-right: 17%;
 }
 
 a {

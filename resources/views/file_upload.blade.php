@@ -3,7 +3,7 @@
     <x-nav></x-nav>
     <div class="container">
         <h1>Upload your Activities</h1>
-        <form method="POST" action='{{route('upload')}}' enctype="multipart/form-data">
+        <form method="POST" action="{{ route('upload') }}" enctype="multipart/form-data">
             @csrf
             <input
                 id="file"
@@ -15,6 +15,6 @@
             <button type="submit">submit</button>
         </form>
     </div>
-    
+
 
 </x-body>

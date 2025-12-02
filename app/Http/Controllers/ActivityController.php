@@ -31,10 +31,15 @@ class ActivityController extends Controller
 
         //$allActivities = array_merge($activities, $followedUsersActivities);
 
-        return view('activities', [
+        return view('dashboard', [
             'activities' => $activities,
             'latestActivity' => $latestActivity
         ]);
+    }
+
+    public function Show(Activity $activity)
+    {
+        return view('activity')->with('activity', $activity);
     }
 
     public function ShowUpload()
