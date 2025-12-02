@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Activity extends Model
 {
@@ -26,7 +25,18 @@ class Activity extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function date()
+    {
+        $date = date('M d, Y', strtotime($this->start_time));
+        return $date;
+    }
+
+    public function icon()
+    {
+        return $this->belongsTo(Icon::class, 'type', 'name');
     }
 
     public function GetFormattedDuration()
@@ -55,18 +65,22 @@ class Activity extends Model
 
     public function GetFormattedAverageSpeed()
     {
-        if ($this->type == 'ride') {
-        }
         if (!$this->average_speed || $this->average_speed <= 0) {
             return null;
         }
 
-        $minutesPerKm = 60 / $this->average_speed;
+        switch ($this->type) {
+            case 'running':
+                $minutesPerKm = 60 / $this->average_speed;
+                $minutes = floor($minutesPerKm);
+                $seconds = round(($minutesPerKm - $minutes) * 60);
+                return sprintf('%d:%02d /km', $minutes, $seconds);
 
-        // Split into minutes and seconds
-        $minutes = floor($minutesPerKm);
-        $seconds = round(($minutesPerKm - $minutes) * 60);
+            case 'cycling':
+                return round($this->average_speed, 2);
 
-        return sprintf('%d:%02d /km', $minutes, $seconds);
+            default:
+                break;
+        }
     }
 }

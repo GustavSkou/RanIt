@@ -1,0 +1,28 @@
+form {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+input[type="file"]::-webkit-file-upload-button {
+    border: 1px solid #000000;
+    padding: 0px 4px 0px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0px 10px 0px 40px;
+}
+
+h1 {
+    font-size: xx-large;
+    margin-bottom: 15px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    padding-top: 25px;
+
+    margin-left: 10%;
+}

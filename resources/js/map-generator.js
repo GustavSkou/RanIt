@@ -36,7 +36,7 @@ async function generateMapImage(points, outputPath, options = {}) {
             ];
             
             // Create map
-            const map = L.map('map', { zoomControl: false }).fitBounds(bounds, {padding: [20, 20]});
+            const map = L.map('map', { zoomControl: false }).fitBounds(bounds);
             
             // Add tile layer
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

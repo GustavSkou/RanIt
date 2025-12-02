@@ -1,13 +1,14 @@
 main{
-    
+    display: grid;
+    grid-template-columns: 300px 616px 300px;
+    gap: 0 25px;
+    justify-content: center;
 }
 
 .feat {
     display: flex;
     flex-direction: column;
-
     align-items: center;
-
 }
 
 .activity-container {
@@ -37,6 +38,7 @@ time {
 .top-panel {
     display: flex;
     flex-direction: row;
+    margin-bottom: 15px;
 }
 .top-panel div {
     display: flex;
@@ -65,10 +67,21 @@ time {
     flex-direction: row;
 }
 
-.img {
+.icon-container {
+    width: 40px;
+    margin-right: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.type-icon {
     height: 24px;
     width: 24px;
-    margin-right: 24px;
+    margin-top: 7px;
+}
+.profile-icon {
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 /*image panel*/

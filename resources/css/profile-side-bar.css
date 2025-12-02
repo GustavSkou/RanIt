@@ -1,0 +1,48 @@
+.left-side {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    justify-items: center;
+    gap: 20px;
+    margin-top: 35px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-info img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+
+    margin: 0 auto;
+}
+
+.profile-info h1 {
+    text-align: center;
+    font-size: x-large;
+}
+
+.profile-info ul {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    margin: 0 auto;
+    
+}
+
+.profile-info ul li{
+    width: 55px;
+    justify-items: center;
+}
+
+
+.week-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}

@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('points', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->float("latitude");
             $table->float("longitude");
             $table->float("elevation");

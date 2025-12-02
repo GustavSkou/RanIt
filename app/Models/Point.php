@@ -10,6 +10,8 @@ class Point extends Model
     /** @use HasFactory<\Database\Factories\PointFactory> */
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = ['latitude', 'longitude', 'elevation', 'heart_rate', 'timestamp', 'activity_id'];
 
     public function activity()

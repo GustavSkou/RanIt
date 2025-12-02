@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\Point;
+use App\Models\FollowList;
+
 use Exception;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class ActivityController extends Controller
 {
@@ -17,14 +19,22 @@ class ActivityController extends Controller
     {
         try {
             $userId = Auth::user()->id;
+            $allUserIds = FollowList::where('user_id', $userId)->pluck('follows_user_id')->push($userId)->toArray();
         } catch (Exception $ex) {
             $userId = 1;
+            $allUserIds = [];
         }
 
+        $activities = Activity::where('user_id', $allUserIds)->orderBy('start_time', 'desc')->paginate(25);
+        $latestActivity = Activity::where('user_id', $userId)->orderBy('start_time', 'desc')->first();
+        //$followedUsersActivities = array(Activity::where('user_id', $followedUserIds)->get());
 
-        $activities = Activity::where('user_id', $userId)->paginate(25);
+        //$allActivities = array_merge($activities, $followedUsersActivities);
 
-        return view('activities')->with('activities', $activities);
+        return view('activities', [
+            'activities' => $activities,
+            'latestActivity' => $latestActivity
+        ]);
     }
 
     public function ShowUpload()
@@ -116,7 +126,11 @@ class ActivityController extends Controller
         $time2 = null;
         $firstTime = null;
 
-        $points = [];
+        $allPoints = [];
+
+        // chunk the dataset if it is larger than this
+        $chunkSize = 5000;
+        $chunkPoints = [];
 
         foreach ($xml->trk as $track) {
             foreach ($track->trkseg as $segment) {
@@ -153,22 +167,34 @@ class ActivityController extends Controller
                         }
                     }
 
-                    $point = Point::create([
+                    $point = [
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                         'elevation' => $elevation,
                         'timestamp' => $timeString,
-                        'speed' => $speed,              // is nullable
+                        //'speed' => $speed,              // is nullable
                         'heart_rate' => $heartRate,     // is nullable
                         'activity_id' => $activityId
-                    ]);
-                    array_push($points, [$point->latitude, $point->longitude]);
+                    ];
+
+                    array_push($allPoints, $point);
+                    array_push($chunkPoints, $point);
+
+                    if (count($chunkPoints) >= $chunkSize) {
+                        Point::insert($chunkPoints);
+                        $chunkPoints = [];
+                    }
 
                     $latitude2 = $latitude;
                     $longitude2 = $longitude;
                     $time2 = $time;
                 }
             }
+        }
+
+        // insert the rest of the points
+        if (count($chunkPoints) > 0) {
+            Point::insert($chunkPoints);
         }
 
         $durationInSeconds = null;
@@ -182,22 +208,20 @@ class ActivityController extends Controller
             'start_time' => $firstTime,
             'average_speed' => $speedPoints > 0 ? $accumulatedSpeed / $speedPoints : null,
             'average_heart_rate' => $hrPoints > 0 ? $accumulatedHeartRate / $hrPoints : null,
-            'points' => $points
+            'points' => $allPoints
         ];
     }
 
     private function generateActivityMapImage(Activity $activity, $points)
     {
+        $points = array_map(function ($point) {
+            return [$point['latitude'], $point['longitude']];
+        }, $points);
+
         if (empty($points)) {
             Log::info("Map image generation stopped, no points");
             return;
         }
-
-        // Create output directory if it doesn't exist
-
-        /*if (Storage::disk('public')->put()) {
-            // ...
-        }*/
 
         $mapOutputDir = storage_path('app/public/maps');
         if (!file_exists($mapOutputDir)) {
