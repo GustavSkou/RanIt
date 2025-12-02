@@ -1,20 +1,20 @@
-@vite(['resources\css\activities.css', 'resources\css\profile-side-bar.css'])
+@vite(['resources\css\dashboard.css', 'resources\css\profile-side-bar.css'])
 <x-body>
     <x-nav></x-nav>
     <main>
         <div class="left-side">
-            
+
             <div class="profile-info">
-                
+
                 <?php
                 $authedUser = Auth::user();
-               ?>
+                ?>
 
                 <div>
                     <img src="{{ $authedUser->profile_picture_path }}">
                     <h1>{{$authedUser->name ?? ""}}</h1>
                 </div>
-                
+
                 <ul>
                     <li>
                         <p>Following</p>
@@ -40,13 +40,13 @@
                 </div>
                 <div class="activity-streak">
                     <p>Week</p>
-                    
+
                 </div>
             </div>
             @endif
         </div>
 
-        <div class="feat">        
+        <div class="feat">
             @foreach ($activities as $activity)
             <div class="activity-container" id="activity-{{ $activity->id }}">
                 <div class="top-panel">
@@ -78,7 +78,7 @@
                     </div>
                     <div class="info-panel">
                         <h2>
-                            <a class="activity-name">{{$activity->name}}</a>
+                            <a class="activity-name" href={{ route('show', $activity) }}>{{ $activity->name }}</a>
                         </h2>
                         <ul class="stat-ul">
                             @if ($activity->distance != null)
@@ -90,16 +90,16 @@
                             @if ($activity->average_speed != null)
                             <li>
                                 @switch($activity->type)
-                                    @case('running')
-                                        <p>Pace</p>
-                                        @break
-                                    @case('cycling')
-                                        <p>Speed</p>
-                                        @break
-                                    @default
-                                        <p>Speed</p>
-                                        @break
-                                @endswitch 
+                                @case('running')
+                                <p>Pace</p>
+                                @break
+                                @case('cycling')
+                                <p>Speed</p>
+                                @break
+                                @default
+                                <p>Speed</p>
+                                @break
+                                @endswitch
                                 <div>{{ $activity->GetFormattedAverageSpeed() }}</div>
                             </li>
                             @endif
@@ -118,15 +118,15 @@
 
                 <div class="image-panel">
                     @if ($activity->map_image_path != null)
-                        <image class="map-image" src="{{ $activity->map_image_path }}" alt={{ $activity->name }}></image>
+                    <image class="map-image" src="{{ $activity->map_image_path }}" alt={{ $activity->name }}></image>
                     @endif
                 </div>
             </div>
             @endforeach
-        </div >
+        </div>
 
         <div class="right-side">
-            
+
         </div>
     </main>
 </x-body>

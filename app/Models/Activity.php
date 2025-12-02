@@ -83,4 +83,9 @@ class Activity extends Model
                 break;
         }
     }
+
+    public function GetFormattedAverageHeartRate()
+    {
+        return round($this->average_heart_rate, 0);
+    }
 }

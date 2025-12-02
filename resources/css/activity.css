@@ -1,0 +1,98 @@
+.activity-container {
+    width: 800px;
+    height: fit-content;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 25px 25px 25px 25px;
+    background-color: rgb(250, 250, 250);
+}
+
+.top-container{
+    display: flex;
+    flex-direction: row;
+}
+
+.activity-name {
+    padding: 0px;
+    font-size: x-large;
+}
+
+
+
+p {
+    font-size: small;
+}
+
+time {
+    font-size: small;
+}
+
+label {
+    font-size: small;
+}
+
+/*TOP PANEL*/
+.top-right-panel {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 15px;
+}
+
+.top-right-panel div {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    padding: 0px;
+    font-size: x-large;
+}
+/* right PANEL */
+.stat-ul {
+    display: flex;
+    flex-direction: row;
+}
+
+.stat-ul li {
+    margin-right: 32px;
+}
+
+.stat-ul li div {
+    font-size: x-large;
+}
+
+.middle-panel {
+    display: flex;
+    flex-direction: row;
+}
+
+.middle-panel {
+    display: flex;
+    flex-direction: row;
+}
+
+.icon-container {
+    width: 40px;
+    margin-right: 24px;
+    display: flex;
+    justify-content: center;
+}
+
+.type-icon {
+    height: 24px;
+    width: 24px;
+    margin-top: 7px;
+}
+
+.profile-icon {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/*image panel*/
+
+.image-panel {
+    margin-top: 25px;
+}
