@@ -3,20 +3,30 @@
     <x-nav></x-nav>
     <main>
         <div class="left-side">
+            
             <div class="profile-info">
-                <h1>{{Auth::user()->name ?? ""}}</h1>
+                
+                <?php
+                $authedUser = Auth::user();
+               ?>
+
+                <div>
+                    <img src="{{ $authedUser->profile_picture_path }}">
+                    <h1>{{$authedUser->name ?? ""}}</h1>
+                </div>
+                
                 <ul>
                     <li>
                         <p>Following</p>
-                        <div>123</div>
+                        <div>{{ count($authedUser->following) }}</div>
                     </li>
                     <li>
                         <p>Followers</p>
-                        <div>321</div>
+                        <div>{{ count($authedUser->followers) }}</div>
                     </li>
                     <li>
                         <p>Activities</p>
-                        <div>123</div>
+                        <div>{{ count($authedUser->activities) }}</div>
                     </li>
                 </ul>
             </div>
@@ -40,8 +50,8 @@
             @foreach ($activities as $activity)
             <div class="activity-container" id="activity-{{ $activity->id }}">
                 <div class="top-panel">
-                    <div class="img">
-                        <p>pic</p>
+                    <div class="icon-container">
+                        <img class="profile-icon" src="{{ $activity->user->profile_picture_path }}">
                     </div>
                     <div>
                         <a class="user-name">{{ $activity->user->name ?? 'NO NAME' }}</a>
@@ -61,11 +71,10 @@
                         @endif
                     </div>
 
-
                 </div>
                 <div class="middle-panel">
-                    <div class="img">
-                        <p>run</p>
+                    <div class="icon-container">
+                        <img class="type-icon" src="{{ $activity->icon->path }}">
                     </div>
                     <div class="info-panel">
                         <h2>
@@ -106,6 +115,7 @@
                         </ul>
                     </div>
                 </div>
+
                 <div class="image-panel">
                     @if ($activity->map_image_path != null)
                         <image class="map-image" src="{{ $activity->map_image_path }}" alt={{ $activity->name }}></image>

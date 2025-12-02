@@ -34,6 +34,11 @@ class Activity extends Model
         return $date;
     }
 
+    public function icon()
+    {
+        return $this->belongsTo(Icon::class, 'type', 'name');
+    }
+
     public function GetFormattedDuration()
     {
         $hours = floor($this->duration / 3600);

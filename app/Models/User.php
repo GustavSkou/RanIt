@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -21,6 +22,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'profile_picture_path'
+    ];
+
+    protected $attributes = [
+        'profile_picture_path' => 'images/icons/social/default-profile-pic.png' //default value
     ];
 
     /**
@@ -44,5 +50,39 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function followLists()
+    {
+        return $this->hasMany(FollowList::class, 'user_id', 'id');
+    }
+
+    public function following()
+    {
+        return $this->hasManyThrough(
+            User::class,
+            FollowList::class,
+            'user_id',
+            'id',
+            'id',
+            'follows_user_id'
+        );
+    }
+
+    public function followers()
+    {
+        return $this->hasManyThrough(
+            User::class,
+            FollowList::class,
+            'follows_user_id', // Foreign key on FollowList table
+            'id',              // Foreign key on User table  
+            'id',              // Local key on User table
+            'user_id'          // Local key on FollowList table
+        );
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
     }
 }
