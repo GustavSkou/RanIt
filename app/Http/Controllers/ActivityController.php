@@ -39,7 +39,11 @@ class ActivityController extends Controller
 
     public function Show(Activity $activity)
     {
-        return view('activity')->with('activity', $activity);
+        $points = Point::where('activity_id', $activity->id)->get();
+        return view('activity', [
+            'activity' => $activity,
+            'points' => $points
+        ]);
     }
 
     public function ShowUpload()

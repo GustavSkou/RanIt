@@ -23,6 +23,10 @@ class Activity extends Model
         'user_id',
     ];
 
+    protected $attributes = [
+        'type' => 'route'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
