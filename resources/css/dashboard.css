@@ -3,13 +3,13 @@ main{
     grid-template-columns: 300px 616px 300px;
     gap: 0 25px;
     justify-content: center;
+    margin-top: 35px;
 }
 
 .feat {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 35px;
     
     gap: 10px;
 }

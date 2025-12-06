@@ -63,7 +63,8 @@ class Activity extends Model
 
     public function GetFormattedDistance()
     {
-        $formatted = round($this->distance, 2);
+        $distance = round($this->distance, 2);
+        $formatted = sprintf('%s km', $distance);
         return $formatted;
     }
 
