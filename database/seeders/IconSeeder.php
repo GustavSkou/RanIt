@@ -13,13 +13,13 @@ class IconSeeder extends Seeder
      */
     public function run(): void
     {
-        $typeIconsPath = 'images/icons/activity-types/';
+        $typeIconsPath = 'icons/activity-types/';
         $icons = [
             'running'   => $typeIconsPath . 'running.png',
             'cycling'   => $typeIconsPath . 'cycling.png',
             'walking '  => $typeIconsPath . 'walking.png',
             'swimming'  => $typeIconsPath . 'swimming.png',
-            'workout '      => $typeIconsPath . 'workout.png',
+            'workout '  => $typeIconsPath . 'workout.png',
             'route'     => $typeIconsPath . 'route.png'
         ];
 

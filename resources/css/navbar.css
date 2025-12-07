@@ -10,19 +10,19 @@ nav {
     padding-right: 17%;
 }
 
-a {
+nav a {
     padding-left: 12px;
     padding-right: 12px;
     text-decoration: none;
     color: black;
 }
 
-.left {
+nav .left {
     display: flex;
     align-items: center;
 }
 
-.right {
+nav .right {
     display: flex;
     align-items: center;
     margin-left: auto;

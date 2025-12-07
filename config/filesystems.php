@@ -75,8 +75,16 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
-        public_path('images') => storage_path('app/public/images'),
-        public_path('maps') => storage_path('app/public/maps'),
+        //public_path('images') => storage_path('app/public/images'),
+
+        /*public_path('icons') => storage_path('app/public/images/icons'),
+        public_path('activity-types') => storage_path('app/public/images/icons/activity-types'),
+        public_path('social') => storage_path('app/public/images/icons/social'),
+        public_path('social') => storage_path('app/public/images/icons/ui'),
+
+        public_path('s') => storage_path('app/public/images/maps'),*/
+
+
     ],
 
 ];

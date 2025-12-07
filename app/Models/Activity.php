@@ -50,13 +50,13 @@ class Activity extends Model
         $seconds = $this->duration % 60;
 
         if ($hours > 0) {
-            $formatted = sprintf('%02dh %02dm %02ds', $hours, $minutes, $seconds);
+            $formatted = sprintf('%2dh %02dm %02ds', $hours, $minutes, $seconds);
             return $formatted;
         } elseif ($minutes > 0) {
-            $formatted = sprintf('%02dm %02ds', $minutes, $seconds);
+            $formatted = sprintf('%2dm %02ds', $minutes, $seconds);
             return $formatted;
         } else {
-            $formatted = sprintf('%02ds', $seconds);
+            $formatted = sprintf('%2ds', $seconds);
             return $formatted;
         }
     }

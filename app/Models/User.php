@@ -26,7 +26,7 @@ class User extends Authenticatable
     ];
 
     protected $attributes = [
-        'profile_picture_path' => 'images/icons/social/default-profile-pic.png'
+        'profile_picture_path' => 'icons/social/default-profile-pic.png'
     ];
 
     /**

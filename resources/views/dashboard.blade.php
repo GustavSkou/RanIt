@@ -3,33 +3,33 @@
     <x-nav></x-nav>
     <main>
         <div class="left-side">
-
             <div class="profile-info">
-
-                <?php
+                @php
                 $authedUser = Auth::user();
-                ?>
+                @endphp
 
                 <div>
-                    <img src="{{ $authedUser->profile_picture_path }}">
-                    <h1>{{$authedUser->name ?? ""}}</h1>
+                    <!-- FIX 1: Add asset() helper -->
+                    <img src="{{ asset($authedUser->profile_picture_path) }}" alt="Profile Picture" class="profile-picture">
+                    <h1>{{ $authedUser->name ?? "" }}</h1>
                 </div>
 
                 <ul>
                     <li>
                         <p>Following</p>
-                        <div>{{ count($authedUser->following) }}</div>
+                        <div>{{ $authedUser->following()->count() }}</div>
                     </li>
                     <li>
                         <p>Followers</p>
-                        <div>{{ count($authedUser->followers) }}</div>
+                        <div>{{ $authedUser->followers()->count() }}</div>
                     </li>
                     <li>
                         <p>Activities</p>
-                        <div>{{ count($authedUser->activities) }}</div>
+                        <div>{{ $authedUser->activities()->count() }}</div>
                     </li>
                 </ul>
             </div>
+
             @if ($latestActivity)
             <div class="week-summary">
                 <div class="latest-activity">
@@ -40,7 +40,6 @@
                 </div>
                 <div class="activity-streak">
                     <p>Week</p>
-
                 </div>
             </div>
             @endif
@@ -51,7 +50,7 @@
             <div class="activity-container" id="activity-{{ $activity->id }}">
                 <div class="top-panel">
                     <div class="icon-container">
-                        <img class="profile-icon" src="{{ $activity->user->profile_picture_path }}">
+                        <img class="profile-icon" src="{{ asset($activity->user->profile_picture_path) }}" alt="User Profile">
                     </div>
                     <div>
                         <a class="user-name">{{ $activity->user->name ?? 'NO NAME' }}</a>
@@ -70,15 +69,15 @@
                         <span>{{ $activity->location }}</span>
                         @endif
                     </div>
-
                 </div>
+
                 <div class="middle-panel">
                     <div class="icon-container">
-                        <img class="type-icon" src="{{ $activity->icon->path }}">
+                        <img class="type-icon" src="{{ asset($activity->icon->path) }}" alt="Activity Type">
                     </div>
                     <div class="info-panel">
                         <h2>
-                            <a class="activity-name" href={{ route('show', $activity) }}>{{ $activity->name }}</a>
+                            <a class="activity-name" href="{{ route('show', $activity) }}">{{ $activity->name }}</a>
                         </h2>
                         <ul class="stat-ul">
                             @if ($activity->distance != null)
@@ -87,6 +86,7 @@
                                 <div>{{ $activity->GetFormattedDistance() }}</div>
                             </li>
                             @endif
+
                             @if ($activity->average_speed != null)
                             <li>
                                 @switch($activity->type)
@@ -103,22 +103,20 @@
                                 <div>{{ $activity->GetFormattedAverageSpeed() }}</div>
                             </li>
                             @endif
+
                             @if ($activity->duration != null)
                             <li>
                                 <p>Time</p>
-                                <div>
-                                    {{ $activity->GetFormattedDuration() }}
-                                </div>
+                                <div>{{ $activity->GetFormattedDuration() }}</div>
                             </li>
                             @endif
-
                         </ul>
                     </div>
                 </div>
 
                 <div class="image-panel">
                     @if ($activity->map_image_path != null)
-                    <image class="map-image" src="{{ $activity->map_image_path }}" alt={{ $activity->name }}></image>
+                    <img class="map-image" src="{{ asset('storage/' . $activity->map_image_path) }}" alt="{{ $activity->name }}">
                     @endif
                 </div>
             </div>
@@ -126,7 +124,6 @@
         </div>
 
         <div class="right-side">
-
         </div>
     </main>
 </x-body>
