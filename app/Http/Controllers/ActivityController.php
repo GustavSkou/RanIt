@@ -39,10 +39,10 @@ class ActivityController extends Controller
 
     public function Show(Activity $activity)
     {
-        $points = Point::where('activity_id', $activity->id)->get();
+        $activity->load('points');
+
         return view('activity', [
-            'activity' => $activity,
-            'points' => $points
+            'activity' => $activity
         ]);
     }
 
@@ -90,6 +90,7 @@ class ActivityController extends Controller
             $activity->average_heart_rate = $pointsSummary['average_heart_rate'];
             $activity->start_time = $pointsSummary['start_time'];
             $activity->duration = $pointsSummary['duration'];
+            $activity->elevation = $pointsSummary['elevation'];
             $activity->save();
 
             $points = $pointsSummary['points'];
@@ -127,18 +128,21 @@ class ActivityController extends Controller
         $totalDistance = 0;
         $accumulatedSpeed = 0;
         $accumulatedHeartRate = 0;
+        $durationInSeconds = 0;
+        $totalElevation = 0;
 
         $speedPoints = 0;
         $hrPoints = 0;
         $latitude2 = null;
         $longitude2 = null;
         $time2 = null;
+        $elevation2 = null;
         $firstTime = null;
 
         $allPoints = [];
 
         // chunk the dataset if it is larger than this
-        $chunkSize = 5000;
+        $chunkSize = 2500;
         $chunkPoints = [];
 
         foreach ($xml->trk as $track) {
@@ -173,6 +177,15 @@ class ActivityController extends Controller
                             $speed = $distance / (($time->getTimestamp() - $time2->getTimestamp()) / (60 * 60));
                             $accumulatedSpeed += $speed;
                             $speedPoints++;
+
+                            $durationInSeconds += $time->getTimestamp() - $time2->getTimestamp();
+                        }
+                    }
+
+                    if ($elevation != null && $elevation2 != null) {
+                        // If we are going up, add the elevation diff
+                        if ($elevation > $elevation2) {
+                            $totalElevation += ($elevation - $elevation2);
                         }
                     }
 
@@ -181,7 +194,6 @@ class ActivityController extends Controller
                         'longitude' => $longitude,
                         'elevation' => $elevation,
                         'timestamp' => $timeString,
-                        //'speed' => $speed,              // is nullable
                         'heart_rate' => $heartRate,     // is nullable
                         'activity_id' => $activityId
                     ];
@@ -197,6 +209,7 @@ class ActivityController extends Controller
                     $latitude2 = $latitude;
                     $longitude2 = $longitude;
                     $time2 = $time;
+                    $elevation2 = $elevation;
                 }
             }
         }
@@ -206,14 +219,10 @@ class ActivityController extends Controller
             Point::insert($chunkPoints);
         }
 
-        $durationInSeconds = null;
-        if ($firstTime != null) {
-            $durationInSeconds = $time2 ? $time2->getTimestamp() - $firstTime->getTimestamp() : null;
-        }
-
         return [
             'distance' => $totalDistance,
             'duration' => $durationInSeconds,
+            'elevation' => $totalElevation,
             'start_time' => $firstTime,
             'average_speed' => $speedPoints > 0 ? $accumulatedSpeed / $speedPoints : null,
             'average_heart_rate' => $hrPoints > 0 ? $accumulatedHeartRate / $hrPoints : null,

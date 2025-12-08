@@ -8,9 +8,6 @@
     margin: 35 auto;
 
     gap: 25px;
-
-    
-    
 }
 
 .summary-container {
@@ -97,8 +94,6 @@ label {
 .more-stat-ul li div {
     font-size: large;
 }
-
-
 
 .type-icon {
     height: 24px;

@@ -3,7 +3,7 @@
     <x-nav></x-nav>
 
     <script>
-        window.points = {{Illuminate\Support\Js::from($points)}};
+        window.points = {{Illuminate\Support\Js::from($activity->points)}};
     </script>
         <div class="activity-container">
 
@@ -40,14 +40,14 @@
                         <ul class="stat-ul">
                             @if ($activity->distance != null)
                             <li>
-                                <div>{{ $activity->GetFormattedDistance() }}</div>
+                                <div>{{ $activity->getFormattedDistance() }}</div>
                                 <label>Distance</label>
                             </li>
                             @endif
                             
                             @if ($activity->average_speed != null)
                             <li>
-                                <div>{{ $activity->GetFormattedAverageSpeed() }}</div>
+                                <div>{{ $activity->getFormattedAverageSpeed() }}</div>
                                 @switch($activity->type)
                                 @case('running')
                                 <label>Pace</label>
@@ -65,9 +65,9 @@
                             @if ($activity->duration != null)
                             <li>
                                 <div>
-                                    {{ $activity->GetFormattedDuration() }}
+                                    {{ $activity->getFormattedDuration() }}
                                 </div>
-                                <label>Time</label>
+                                <label>Moving time</label>
                             </li>
                             @endif
 
@@ -84,15 +84,15 @@
                         <ul class="stat-ul more-stat-ul">
                             @if ($activity->distance != null)
                             <li>
-                                <div>123</div>
+                                <div>{{$activity->getFormattedElevation()}}</div>
                                 <label>Elevation</label>
                             </li>
                             @endif
                             
                             @if ($activity->average_speed != null)
                             <li>
-                                <div>123</div>
-                                <label>Moving time</label>
+                                <div>{{$activity->movingTime()}}</div>
+                                <label>Total time</label>
                             </li>
                             @endif
 
@@ -117,8 +117,6 @@
 
             <div>
                 <div id="map" class="map"></div>
-
-                
             </div>
         </div>
 

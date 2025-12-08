@@ -20,6 +20,7 @@ return new class extends Migration
             $table->float("distance")->nullable();
             $table->timestamp('start_time')->nullable();
             $table->integer('duration')->nullable();        // duration in seconds
+            $table->integer('elevation')->nullable();
             $table->float("average_speed")->nullable();
             $table->float("average_heart_rate")->nullable();
             $table->string("map_image_path")->nullable();

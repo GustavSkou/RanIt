@@ -19,6 +19,7 @@ class Activity extends Model
         'duration',
         'average_speed',
         'average_heart_rate',
+        'elevation',
         'map_image_path',
         'user_id',
     ];
@@ -43,32 +44,32 @@ class Activity extends Model
         return $this->belongsTo(Icon::class, 'type', 'name');
     }
 
-    public function GetFormattedDuration()
+    public function points()
     {
-        $hours = floor($this->duration / 3600);
-        $minutes = floor(($this->duration % 3600) / 60);
-        $seconds = $this->duration % 60;
-
-        if ($hours > 0) {
-            $formatted = sprintf('%2dh %02dm %02ds', $hours, $minutes, $seconds);
-            return $formatted;
-        } elseif ($minutes > 0) {
-            $formatted = sprintf('%2dm %02ds', $minutes, $seconds);
-            return $formatted;
-        } else {
-            $formatted = sprintf('%2ds', $seconds);
-            return $formatted;
-        }
+        return $this->hasMany(Point::class, 'activity_id', 'id');
     }
 
-    public function GetFormattedDistance()
+    public function movingTime()
+    {
+        $firstPoint = $this->points->first();
+        $lastPoint = $this->points->last();
+        $duration = strtotime($lastPoint['timestamp']) - strtotime($firstPoint['timestamp']);
+        return $this->formatDuration($duration);
+    }
+
+    public function getFormattedDuration()
+    {
+        return $this->formatDuration($this->duration);
+    }
+
+    public function getFormattedDistance()
     {
         $distance = round($this->distance, 2);
         $formatted = sprintf('%s km', $distance);
         return $formatted;
     }
 
-    public function GetFormattedAverageSpeed()
+    public function getFormattedAverageSpeed()
     {
         if (!$this->average_speed || $this->average_speed <= 0) {
             return null;
@@ -89,8 +90,31 @@ class Activity extends Model
         }
     }
 
-    public function GetFormattedAverageHeartRate()
+    public function getFormattedAverageHeartRate()
     {
         return round($this->average_heart_rate, 0);
+    }
+
+    public function getFormattedElevation()
+    {
+        return round($this->elevation, 2) . "m";
+    }
+
+    private function formatDuration($duration)
+    {
+        $hours = floor($this->duration / 3600);
+        $minutes = floor(($this->duration % 3600) / 60);
+        $seconds = $this->duration % 60;
+
+        if ($hours > 0) {
+            $formatted = sprintf('%2dh %02dm %02ds', $hours, $minutes, $seconds);
+            return $formatted;
+        } elseif ($minutes > 0) {
+            $formatted = sprintf('%2dm %02ds', $minutes, $seconds);
+            return $formatted;
+        } else {
+            $formatted = sprintf('%2ds', $seconds);
+            return $formatted;
+        }
     }
 }
