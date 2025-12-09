@@ -1,4 +1,4 @@
-@vite(['resources/css/activity.css', 'resources/js/activityMap.js'])
+@vite(['resources/css/activity.css', 'resources/js/activityMap.js', 'resources/js/activityChart.js'])
 <x-body>
     <x-nav></x-nav>
 
@@ -117,7 +117,10 @@
 
             <div>
                 <div id="map" class="map"></div>
+                <canvas id="chart" class="chart" width="400" height="100"></canvas>
             </div>
+
+            
         </div>
 
         
