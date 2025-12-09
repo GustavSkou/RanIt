@@ -1,34 +1,44 @@
 import Chart from 'chart.js/auto';
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Get the canvas element
-    const ctx = document.getElementById('chart');
-    
-    if (!ctx) {
+    const canvasElement = document.getElementById('chart');
+
+    if (!canvasElement) {
         console.error('Chart canvas not found');
         return;
     }
 
-    const myChart = new Chart(ctx, {
+    const speedArray = formatSpeed(getSpeedArray());
+
+    const myChart = new Chart(canvasElement, {
         type: 'line', 
         data: {
             labels: getDistanceFromStartArray().map(distance => (Math.floor(distance * 100) / 100) + " km"),
             datasets: [
                 {
-                    label: 'Pace',
-                    data: getSpeedArray(),
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    label: 'Speed',
+                    data: speedArray,
+                    borderColor: 'rgba(92, 163, 225, 1)',
                     borderWidth: 2,
                     radius: 0,
+                    yAxisID: 'y',
                 },
                 {
                     label: 'Heart rate',
                     data: window.points.map(point => point.heart_rate),
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(249, 83, 119, 1)',
                     borderWidth: 2,
                     radius: 0,
+                    yAxisID: 'yHeartRate',
+                },
+                {
+                    label: 'Elevation',
+                    data: window.points.map(point => point.elevation),
+                    borderColor: 'rgba(0, 0, 0, 0)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.55)',
+                    radius: 0,
+                    fill: true,
+                    yAxisID: 'yElevation',
                 }
             ]
         },
@@ -46,21 +56,82 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             scales: {
                 y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
                     beginAtZero: true,
+                    reverse: shouldAxisBeReversed(),
                     title: {
-                        display: false,
-                        text: 'Value'
+                        display: true,
+                        text: getSpeedUnit()   
+                    }
+                },
+                yHeartRate: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    beginAtZero: true,
+                    display: false,
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                    title: {
+                        display: true,
+                        text: "elevation"
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + ' m'; 
+                        }
+                    }
+                },
+                yElevation: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    beginAtZero: true,
+                    grid: {
+                        drawOnChartArea: false,
+                    },
+                    title: {
+                        display: true,
+                        text: "elevation"
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value + ' m'; 
+                        }
                     }
                 },
                 x: {
                     ticks: {
-                        maxTicksLimit: 10 // Show maximum 10 labels
+                        maxTicksLimit: 13,
+                        
                     }
                 }
             }
         }
     });
 });
+
+function formatSpeed(speedArray){
+    switch (window.activity['type']) {
+        case "running":
+            speedArray = speedArray.map(speed => {
+                let formattedSpeed = 60 / speed;
+                if (formattedSpeed > 10 ){
+                    return 10;
+                } else {
+                    return formattedSpeed;
+                }
+            } );
+            return speedArray
+        case "cycling":
+            return speedArray;
+        default:
+            break;
+    }
+}
 
 function getSpeedArray() {
     if (!window.points || window.points.length < 2) {
@@ -95,8 +166,22 @@ function getSpeedArray() {
         
         speedArray.push(Math.round(speed * 100) / 100); 
     }
-    
-    return speedArray;
+
+    const avgSpeedArray = [];
+    const sliceSize = 10;
+    let speedSum = 0;
+    for (let i = 0; i < speedArray.length; i++) {
+        for (let j = i; j < sliceSize + i; j++) {
+            if (j >= speedArray.length) {
+                continue;
+            }
+            speedSum = speedSum + speedArray[j];
+        }
+        avgSpeedArray[i] = speedSum / sliceSize;
+        speedSum = 0;        
+    }
+
+    return avgSpeedArray;
 }
 
 function getDistanceFromStartArray(){
@@ -121,7 +206,6 @@ function getDistanceFromStartArray(){
     return distanceFromStartArray;
 }
 
-
 function calculateDistance(lat1, lng1, lat2, lng2) {
     const R = 6371;
     
@@ -136,4 +220,26 @@ function calculateDistance(lat1, lng1, lat2, lng2) {
     const distance = R * c;
     
     return distance;
+}
+
+function getSpeedUnit() {
+    switch (window.activity['type']) {
+        case "running":
+            return 'min/km';
+        case "cycling":
+            return 'km/h';
+        default:
+            return 'min/km';
+    }
+}
+
+function shouldAxisBeReversed() {
+    switch (window.activity['type']) {
+        case "running":
+            return true;
+        case "cycling":
+            return false;
+        default:
+            return true;
+    }
 }

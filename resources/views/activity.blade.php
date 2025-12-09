@@ -4,6 +4,7 @@
 
     <script>
         window.points = {{Illuminate\Support\Js::from($activity->points)}};
+        window.activity = {{Illuminate\Support\Js::from($activity)}};
     </script>
         <div class="activity-container">
 
@@ -115,11 +116,13 @@
                 </div>
             </div>
 
-            <div>
-                <div id="map" class="map"></div>
-                <canvas id="chart" class="chart" width="400" height="100"></canvas>
+            <div class="map-container">
+                <div id="map" class="map"></div>    
             </div>
 
+            <div class="chart-container">
+                <canvas id="chart" class="chart" height="250"></canvas>
+            </div>
             
         </div>
 

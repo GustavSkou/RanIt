@@ -1,5 +1,5 @@
 .activity-container {
-    width: 1000px;
+    width: 950px;
     height: fit-content;
 
     display: flex;
@@ -7,12 +7,13 @@
 
     margin: 35 auto;
 
-    gap: 25px;
+    /*gap: 20px;*/
 }
 
 .summary-container {
     background-color: rgb(250, 250, 250);
     padding: 25px 25px 25px 25px;
+    margin-bottom: 20px;
 }
 
 .top-container{
@@ -27,11 +28,29 @@
     font-size: x-large;
 }
 
+.map-container {
+    width: 100%;
+    height: 400px;
+    /*background-color: rgb(250, 250, 250);
+    padding: 10px;*/
+}
+
 .map {
     width: 100%;
-    height: 500px;
+    height: 100%;
+}
+
+.chart-container {
+    width: 100%;
+    height: 100%;
     background-color: rgb(250, 250, 250);
-    padding: 25px 25px 25px 25px;
+    padding: 10px;
+
+}
+.chart {
+    width: 100%;
+    height: 100%;
+
 }
 
 
