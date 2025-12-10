@@ -26,7 +26,7 @@ class User extends Authenticatable
     ];
 
     protected $attributes = [
-        'profile_picture_path' => 'icons/social/default-profile-pic.png'
+        'profile_picture_path' => '/icons/social/default-profile-pic.png' // set to default non user generate image
     ];
 
     /**

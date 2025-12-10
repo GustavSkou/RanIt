@@ -6,126 +6,129 @@
         window.points = {{Illuminate\Support\Js::from($activity->points)}};
         window.activity = {{Illuminate\Support\Js::from($activity)}};
     </script>
-        <div class="activity-container">
+    
+    <div class="activity-container">
 
-            <div class="summary-container">
+        <div class="summary-container">
 
-                <h2 class="user-name">{{ $activity->user->name}}</h2>
+            <h2 class="user-name">{{ $activity->user->name}}</h2>
 
-                <div class="top-container">
-                    <div class="panel-left">
-                        <div class="icon-container">
-                            <img class="profile-icon" src="{{ asset($activity->user->profile_picture_path) }}">
-                        </div>
-                        <div>
-                            @if ($activity->start_time != null)
-                            <span>
-                                <time>{{ $activity->start_time }}</time>
-                            </span>
-                            @endif
-
-                            @if ($activity->device != null)
-                            <span>{{ $activity->device }}</span>
-                            @endif
-
-                            @if ($activity->location != null)
-                            <span>{{ $activity->location }}</span>
-                            @endif
-
-                            <a class="activity-name">{{ $activity->name }}</a>
-                            <p>description</p>
-                        </div> 
+            <div class="top-container">
+                <div class="panel-left">
+                    <div class="icon-container">
+                        <img
+                        src={{ Storage::disk('public')->exists( $activity->user->profile_picture_path) ? asset('storage/' .  $activity->user->profile_picture_path ) : asset('images/' .  $activity->user->profile_picture_path ) }} 
+                        class="profile-icon" 
+                        alt="{{ $activity->user->name }}">
                     </div>
+                    <div>
+                        @if ($activity->start_time != null)
+                        <span>
+                            <time>{{ $activity->start_time }}</time>
+                        </span>
+                        @endif
 
-                    <div class="panel-right">
-                        <ul class="stat-ul">
-                            @if ($activity->distance != null)
-                            <li>
-                                <div>{{ $activity->getFormattedDistance() }}</div>
-                                <label>Distance</label>
-                            </li>
-                            @endif
-                            
-                            @if ($activity->average_speed != null)
-                            <li>
-                                <div>{{ $activity->getFormattedAverageSpeed() }}</div>
-                                @switch($activity->type)
-                                @case('running')
-                                <label>Pace</label>
-                                @break
-                                @case('cycling')
-                                <label>Speed</label>
-                                @break
-                                @default
-                                <label>Speed</label>
-                                @break
-                                @endswitch
-                            </li>
-                            @endif
+                        @if ($activity->device != null)
+                        <span>{{ $activity->device }}</span>
+                        @endif
 
-                            @if ($activity->duration != null)
-                            <li>
-                                <div>
-                                    {{ $activity->getFormattedDuration() }}
-                                </div>
-                                <label>Moving time</label>
-                            </li>
-                            @endif
+                        @if ($activity->location != null)
+                        <span>{{ $activity->location }}</span>
+                        @endif
 
-                            @if ($activity->average_heart_rate != null)
-                            <li>
-                                <div>
-                                    {{ $activity->GetFormattedAverageHeartRate() }}
-                                </div>
-                                <label>Heart Rate</label>
-                            </li>
-                            @endif
-                        </ul>
+                        <a class="activity-name">{{ $activity->name }}</a>
+                        <p>description</p>
+                    </div> 
+                </div>
 
-                        <ul class="stat-ul more-stat-ul">
-                            @if ($activity->distance != null)
-                            <li>
-                                <div>{{$activity->getFormattedElevation()}}</div>
-                                <label>Elevation</label>
-                            </li>
-                            @endif
-                            
-                            @if ($activity->average_speed != null)
-                            <li>
-                                <div>{{$activity->movingTime()}}</div>
-                                <label>Total time</label>
-                            </li>
-                            @endif
+                <div class="panel-right">
+                    <ul class="stat-ul">
+                        @if ($activity->distance != null)
+                        <li>
+                            <div>{{ $activity->getFormattedDistance() }}</div>
+                            <label>Distance</label>
+                        </li>
+                        @endif
+                        
+                        @if ($activity->average_speed != null)
+                        <li>
+                            <div>{{ $activity->getFormattedAverageSpeed() }}</div>
+                            @switch($activity->type)
+                            @case('running')
+                            <label>Pace</label>
+                            @break
+                            @case('cycling')
+                            <label>Speed</label>
+                            @break
+                            @default
+                            <label>Speed</label>
+                            @break
+                            @endswitch
+                        </li>
+                        @endif
 
-                            @if ($activity->duration != null)
-                            <li>
-                                <div>123</div>
-                                <label>Calories</label>
-                            </li>
-                            @endif
+                        @if ($activity->duration != null)
+                        <li>
+                            <div>
+                                {{ $activity->getFormattedDuration() }}
+                            </div>
+                            <label>Moving time</label>
+                        </li>
+                        @endif
 
-                            @if ($activity->average_heart_rate != null)
-                            <li>
-                                <div>123</div>
-                                <label>Effort</label>
-                            </li>
-                            @endif
-                        </ul>
+                        @if ($activity->average_heart_rate != null)
+                        <li>
+                            <div>
+                                {{ $activity->GetFormattedAverageHeartRate() }}
+                            </div>
+                            <label>Heart Rate</label>
+                        </li>
+                        @endif
+                    </ul>
 
-                    </div>
+                    <ul class="stat-ul more-stat-ul">
+                        @if ($activity->distance != null)
+                        <li>
+                            <div>{{$activity->getFormattedElevation()}}</div>
+                            <label>Elevation</label>
+                        </li>
+                        @endif
+                        
+                        @if ($activity->average_speed != null)
+                        <li>
+                            <div>{{$activity->movingTime()}}</div>
+                            <label>Total time</label>
+                        </li>
+                        @endif
+
+                        @if ($activity->duration != null)
+                        <li>
+                            <div>123</div>
+                            <label>Calories</label>
+                        </li>
+                        @endif
+
+                        @if ($activity->average_heart_rate != null)
+                        <li>
+                            <div>123</div>
+                            <label>Effort</label>
+                        </li>
+                        @endif
+                    </ul>
+
                 </div>
             </div>
-
-            <div class="map-container">
-                <div id="map" class="map"></div>    
-            </div>
-
-            <div class="chart-container">
-                <canvas id="chart" class="chart" height="250"></canvas>
-            </div>
-            
         </div>
 
-        
+        <!--Activity Map-->
+        <div class="map-container">
+            <div id="map" class="map"></div>    
+        </div>
 
+        <!--Activity Chart-->
+        <div class="chart-container">
+            <canvas id="chart" class="chart" height="250"></canvas>
+        </div>
+        
+    </div>
 </x-body>

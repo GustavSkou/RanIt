@@ -6,11 +6,16 @@
             <div class="profile-info">
                 @php
                 $authedUser = Auth::user();
+                $profilePicPath = Storage::disk('public')->exists($authedUser->profile_picture_path)
                 @endphp
 
                 <div>
-                    <!-- FIX 1: Add asset() helper -->
-                    <img src="{{ asset($authedUser->profile_picture_path) }}" alt="Profile Picture" class="profile-picture">
+                    <!--check if there is a user generated image in storage-->
+                    <img 
+                    src= {{ Storage::disk('public')->exists($authedUser->profile_picture_path) ? asset('storage/' . $authedUser->profile_picture_path ) : asset('images/' . $authedUser->profile_picture_path ) }} 
+                    alt="Profile Picture" 
+                    class="profile-picture">
+
                     <h1>{{ $authedUser->name ?? "" }}</h1>
                 </div>
 
@@ -50,7 +55,10 @@
             <div class="activity-container" id="activity-{{ $activity->id }}">
                 <div class="top-panel">
                     <div class="icon-container">
-                        <img class="profile-icon" src="{{ asset($activity->user->profile_picture_path) }}" alt="User Profile">
+                        <img 
+                        src="{{ Storage::disk('public')->exists($authedUser->profile_picture_path) ? asset('storage/' . $authedUser->profile_picture_path ) : asset('images/' . $authedUser->profile_picture_path ) }}"
+                        class="profile-icon" 
+                        alt="User Profile">
                     </div>
                     <div>
                         <a class="user-name">{{ $activity->user->name ?? 'NO NAME' }}</a>
@@ -73,7 +81,7 @@
 
                 <div class="middle-panel">
                     <div class="icon-container">
-                        <img class="type-icon" src="{{ asset($activity->icon->path) }}" alt="Activity Type">
+                        <img class="type-icon" src="{{ asset('images/' . $activity->icon->path) }}" alt="Activity Type">
                     </div>
                     <div class="info-panel">
                         <h2>
