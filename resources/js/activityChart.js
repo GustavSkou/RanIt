@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: speedArray,
                     borderColor: 'rgba(92, 163, 225, 1)',
                     borderWidth: 2,
-                    radius: 0,
                     yAxisID: 'y',
                 },
                 {
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: window.points.map(point => point.heart_rate),
                     borderColor: 'rgba(249, 83, 119, 1)',
                     borderWidth: 2,
-                    radius: 0,
                     yAxisID: 'yHeartRate',
                 },
                 {
@@ -36,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     data: window.points.map(point => point.elevation),
                     borderColor: 'rgba(0, 0, 0, 0)',
                     backgroundColor: 'rgba(0, 0, 0, 0.55)',
-                    radius: 0,
                     fill: true,
                     yAxisID: 'yElevation',
                 }
@@ -44,6 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         options: {
             maintainAspectRatio: true,
+            animation: false,
+            spanGaps: true,
+            elements: {
+            point: {
+                radius: 0 
+                }
+            },
             plugins: {
                 title: {
                     display: false,
@@ -52,6 +56,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 legend: {
                     display: true,
                     position: 'top'
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false
                 }
             },
             scales: {
