@@ -17,10 +17,11 @@ Route::post('/login', [AuthController::class, 'Login'])->name('login');
 Route::post('/register', [AuthController::class, 'Register'])->name('register');
 
 
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [ActivityController::class, 'Index'])->name('dashboard');
+    Route::get('/dashboard/{activity}', [ActivityController::class, 'Show'])->name('show');
+    Route::get('/upload', [ActivityController::class, 'ShowUpload'])->name('show.upload');
+    Route::get('/edit/{activity}', [ActivityController::class, 'ShowEdit'])->name('show.editActivity');
 
-Route::get('/dashboard', [ActivityController::class, 'Index'])->name('dashboard');
-Route::get('/dashboard/{activity}', [ActivityController::class, 'Show'])->name('show');
-Route::get('/upload', [ActivityController::class, 'ShowUpload'])->name('show.upload');
-Route::get('/edit/{activity}', [ActivityController::class, 'ShowEdit'])->name('show.editActivity');
-
-Route::post('/upload', [ActivityController::class, 'Upload'])->name('upload');
+    Route::post('/upload', [ActivityController::class, 'Upload'])->name('upload');
+});
