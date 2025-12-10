@@ -10,7 +10,12 @@
     <div class="right">
         <a href=""></a>
         <a href=""></a>
-        <a href=""></a>
+        <a href="{{ route('profile', Auth::user()) }}">
+            <image 
+            src={{ Storage::disk('public')->exists('storage' . Auth::user()->profile_picture_path) ? asset('storage/' . Auth::user()->profile_picture_path ) : asset('images/' . Auth::user()->profile_picture_path ) }}
+            class="nav-profile-icon"
+            alt="{{ Auth::user()->name }}">
+        </a>
         <a href="/upload">Upload</a>
     </div>
 </nav>

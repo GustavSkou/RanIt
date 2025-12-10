@@ -27,3 +27,8 @@ nav .right {
     align-items: center;
     margin-left: auto;
 }
+
+nav .nav-profile-icon {
+    width: 30px;
+    border-radius: 100%;
+}

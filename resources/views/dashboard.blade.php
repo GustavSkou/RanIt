@@ -11,11 +11,12 @@
 
                 <div>
                     <!--check if there is a user generated image in storage-->
-                    <img 
-                    src= {{ Storage::disk('public')->exists($authedUser->profile_picture_path) ? asset('storage/' . $authedUser->profile_picture_path ) : asset('images/' . $authedUser->profile_picture_path ) }} 
-                    alt="Profile Picture" 
-                    class="profile-picture">
-
+                    <a href="{{ route('profile', $authedUser) }}">
+                        <img
+                            src={{ Storage::disk('public')->exists($authedUser->profile_picture_path) ? asset('storage/' . $authedUser->profile_picture_path ) : asset('images/' . $authedUser->profile_picture_path ) }}
+                            alt="Profile Picture"
+                            class="profile-picture">
+                    </a>
                     <h1>{{ $authedUser->name ?? "" }}</h1>
                 </div>
 
@@ -55,10 +56,12 @@
             <div class="activity-container" id="activity-{{ $activity->id }}">
                 <div class="top-panel">
                     <div class="icon-container">
-                        <img 
-                        src="{{ Storage::disk('public')->exists($authedUser->profile_picture_path) ? asset('storage/' . $authedUser->profile_picture_path ) : asset('images/' . $authedUser->profile_picture_path ) }}"
-                        class="profile-icon" 
-                        alt="User Profile">
+                        <a href="{{ route('profile', $activity->user) }}">
+                            <img
+                                src="{{ Storage::disk('public')->exists($authedUser->profile_picture_path) ? asset('storage/' . $authedUser->profile_picture_path ) : asset('images/' . $authedUser->profile_picture_path ) }}"
+                                class="profile-icon"
+                                alt="User Profile">
+                        </a>
                     </div>
                     <div>
                         <a class="user-name">{{ $activity->user->name ?? 'NO NAME' }}</a>

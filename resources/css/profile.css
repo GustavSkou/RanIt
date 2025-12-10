@@ -1,0 +1,24 @@
+h1 {
+    font-size: x-large;
+}
+
+.container {
+    
+    width: 1200px;
+    margin: 35 auto;
+    background-color: rgb(250, 250, 250);
+    display: flex;
+    flex-direction: column;
+    padding: 15px 15px 15px 15px;
+}
+
+.profile-top{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.profile-icon {
+    width: 125px;
+    border-radius: 100%;
+}

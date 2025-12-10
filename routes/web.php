@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActivityController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -24,4 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/edit/{activity}', [ActivityController::class, 'ShowEdit'])->name('show.editActivity');
 
     Route::post('/upload', [ActivityController::class, 'Upload'])->name('upload');
+
+    Route::get('/profile/{user}', [UserController::class, 'showProfile'])->name('profile');
+    Route::get('/profile/edit/{user}', [UserController::class, 'showEdit'])->name('edit-profile');
 });
