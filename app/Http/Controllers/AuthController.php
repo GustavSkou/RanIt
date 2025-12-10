@@ -17,7 +17,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($validated)) {
             $request->session()->regenerate();
-            return redirect()->route('show.upload');
+            return redirect()->route('dashboard');
         }
 
         return back()->withErrors([
@@ -37,7 +37,7 @@ class AuthController extends Controller
         $user = User::create($validated);
         Auth::login($user);
         //redirect()->route('activity.index');
-        return redirect()->route('show.upload');
+        return redirect()->route('dashboard');
     }
 
     function ShowLogin()
