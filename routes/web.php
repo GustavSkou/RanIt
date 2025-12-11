@@ -31,4 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/edit/{user}', [UserController::class, 'showEdit'])->name('edit-profile');
 
     Route::get('/athletes', [UserController::class, 'index'])->name('user.index');
+
+    Route::post('/follow', [UserController::class, 'follow'])->name('follow');
+    Route::post('/unFollow', [UserController::class, 'unFollow'])->name('unFollow');
 });

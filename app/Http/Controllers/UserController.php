@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
+
+use App\Models\FollowList;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -10,9 +13,6 @@ class UserController extends Controller
 {
     function showProfile(User $user)
     {
-        if (Auth::user() != $user) {
-            return back();
-        }
         return view('profile')->with('user', $user);
     }
 
@@ -41,5 +41,42 @@ class UserController extends Controller
         })->values();
 
         return view('users')->with('users', $users);
+    }
+
+    function follow(Request $request)
+    {
+        $validated = $request->validate([
+            'user' => 'required|int'
+        ]);
+
+        $followedUser = $validated['user'];
+
+        $followingUser = Auth::user()->id;
+
+        $followList = [
+            'user_id' => $followingUser,
+            'follows_user_id' => $followedUser
+        ];
+
+
+        FollowList::insert($followList);
+        return back();
+    }
+
+    function unFollow(Request $request)
+    {
+        $validated = $request->validate([
+            'user' => 'required|int'
+        ]);
+
+        $followedUser = $validated['user'];
+        $followingUser = Auth::user()->id;
+
+        FollowList::where([
+            'user_id' => $followingUser,
+            'follows_user_id' => $followedUser
+        ])->delete();
+
+        return back();
     }
 }

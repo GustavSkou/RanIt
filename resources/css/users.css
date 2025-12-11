@@ -15,6 +15,7 @@
     flex-direction: row;
     align-items: center;
     border-bottom: 1px rgb(95, 95, 95) solid;
+    width: 100%;
 }
 
 
@@ -30,4 +31,15 @@
 
 .user-container p {
     font-size: smaller;
+}
+
+.user-container .button {
+    border: 1px solid black;
+    width: 75px;
+    border-radius: 5px;
+}
+
+.user-container .button:hover{
+    background-color: rgba(188, 188, 188, 0.796);
+    transition: 300ms;
 }
