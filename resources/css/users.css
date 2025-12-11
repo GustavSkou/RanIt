@@ -1,0 +1,33 @@
+
+.list {
+    gap: 15px;
+    display: flex;
+    flex-direction: column;
+    margin: 35 auto;
+    width: 1000px;
+    padding: 15px;
+
+    background-color: rgb(250, 250, 250);
+}
+
+.user-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-bottom: 1px rgb(95, 95, 95) solid;
+}
+
+
+.user-container .profile-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+}
+
+.user-container h1 {
+    font-size: larger;
+}
+
+.user-container p {
+    font-size: smaller;
+}
