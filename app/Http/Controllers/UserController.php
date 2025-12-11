@@ -22,4 +22,24 @@ class UserController extends Controller
             return back();
         }
     }
+
+    function index(Request $request)
+    {
+        $validated = $request->validate([
+            'searchInput' => 'required|string'
+        ]);
+
+        $search = $validated['searchInput'];
+
+        $candidates = User::query()
+            ->where('name', 'like', '%' . $search . '%')
+            ->take(50)
+            ->get();
+
+        $users = $candidates->sortByDesc(function (User $user) use ($search) {
+            return similar_text(strtolower($user->name), strtolower($search));
+        })->values();
+
+        return view('users')->with('users', $users);
+    }
 }

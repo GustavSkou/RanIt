@@ -1,7 +1,23 @@
-@vite('resources/css/navbar.css')
+@vite(['resources/css/navbar.css', 'resources/js/navbar.js'])
 <nav>
     <div class="left">
         <a href="/">RanIt</a>
+        <div class="search-container">
+            <button class="search-button" id="searchButton">
+                <img 
+                    src="{{ asset('images/icons/ui/search.png') }}"
+                    class="nav-search-icon"
+                    alt="Search">
+            </button>
+            <form method="GET" action="{{ route('user.index') }}">
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    id="searchInput"
+                    name="searchInput"
+                    placeholder="Search athletes...">
+            </form>
+        </div>
         <a href="/dashboard">Dashboard</a>
         <a href="/training">Training</a>
         <a href="/maps">Maps</a>

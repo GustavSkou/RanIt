@@ -18,6 +18,7 @@ Route::post('/login', [AuthController::class, 'Login'])->name('login');
 Route::post('/register', [AuthController::class, 'Register'])->name('register');
 
 
+
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [ActivityController::class, 'Index'])->name('dashboard');
     Route::get('/dashboard/{activity}', [ActivityController::class, 'Show'])->name('show');
@@ -28,4 +29,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profile/{user}', [UserController::class, 'showProfile'])->name('profile');
     Route::get('/profile/edit/{user}', [UserController::class, 'showEdit'])->name('edit-profile');
+
+    Route::get('/athletes', [UserController::class, 'index'])->name('user.index');
 });
