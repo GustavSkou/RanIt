@@ -1,9 +1,9 @@
 main{
     display: grid;
-    grid-template-columns: 300px 616px 300px;
     gap: 0 25px;
     justify-content: center;
     margin-top: 35px;
+    grid-template-columns: 250px 500px 250px;
 }
 
 .feat {
@@ -15,11 +15,11 @@ main{
 }
 
 .activity-container {
-    width: 616px;
+    width: 100%;
     height: fit-content;
 
     padding: 25px 25px 25px 25px;
-    background-color: rgb(250, 250, 250);
+    background-color: rgb(255, 255, 255);
 }
 
 .activity-name {
@@ -31,10 +31,10 @@ main{
 }
 
 p {
-    font-size: small;
+    font-size: 11;
 }
 time {
-    font-size: small;
+    font-size: 10;
 }
 
 /*TOP PANEL*/
@@ -91,4 +91,16 @@ time {
 
 .image-panel {
     margin-top: 25px;
+}
+
+@media (max-width: 1050px) {
+    main {
+        grid-template-columns: 250px 500px;
+    }
+}
+
+@media (max-width: 750px) {
+    main {
+        grid-template-columns: 500px;
+    }
 }

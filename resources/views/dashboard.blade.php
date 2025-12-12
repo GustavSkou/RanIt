@@ -44,8 +44,36 @@
                     <span>-</span>
                     <span>{{ $latestActivity->date() }}</span>
                 </div>
-                <div class="activity-streak">
-                    <p>Week</p>
+                <div>
+                    <p>Your Week</p>
+                    <div class="activity-streak">
+                        <div class="streakFlame-container">
+                            <img src="{{ asset('images/icons/ui/fire.png') }}" class="streakFlame">
+                            <div class="streakFlame-text">{{ now()->week() }}</div>
+                        </div>
+                        <div class="streak-day-list">
+                            @for ($i = 0; $i < 7; $i++)
+                            <div class="streak-day">
+                                
+                                
+                                <p>{{ now()->startOfWeek()->addDays($i)->format('l')[0] }}</p>
+                                <div>
+                                    @php
+                                        $authedUser->activities
+
+                                    @endphp
+                                    
+                                    @if (true)
+                                        <image src={{ asset("images/" . $activity->type->path) }}>
+                                    @else
+                                        {{ now()->startOfWeek()->addDays($i)->format('j') }}
+                                    @endif
+                                    
+                                </div>
+                            </div>
+                            @endfor
+                        </div>
+                    </div>
                 </div>
             </div>
             @endif

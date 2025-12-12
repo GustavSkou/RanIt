@@ -36,8 +36,15 @@ class AuthController extends Controller
 
         $user = User::create($validated);
         Auth::login($user);
-        //redirect()->route('activity.index');
         return redirect()->route('dashboard');
+    }
+
+    function logout(Request $request)
+    {
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+        return redirect()->route('show.login');
     }
 
     function ShowLogin()

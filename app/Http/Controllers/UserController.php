@@ -43,6 +43,14 @@ class UserController extends Controller
         return view('users')->with('users', $users);
     }
 
+    function showFollowing() {
+        
+    }
+
+    function showFollowers() {
+
+    }
+
     function follow(Request $request)
     {
         $validated = $request->validate([

@@ -1,4 +1,3 @@
-
 .list {
     gap: 15px;
     display: flex;
@@ -17,7 +16,6 @@
     border-bottom: 1px rgb(95, 95, 95) solid;
     width: 100%;
 }
-
 
 .user-container .profile-icon {
     width: 35px;

@@ -19,13 +19,17 @@ class ActivityController extends Controller
     {
         try {
             $userId = Auth::user()->id;
-            $allUserIds = FollowList::where('user_id', $userId)->pluck('follows_user_id')->push($userId)->toArray();
+            $followingUsers = FollowList::where('user_id', $userId)->pluck('follows_user_id')->toArray();
+            array_push($followingUsers, $userId);
         } catch (Exception $ex) {
             $userId = 1;
             $allUserIds = [];
         }
 
-        $activities = Activity::where('user_id', $allUserIds)->orderBy('start_time', 'desc')->paginate(25);
+        $activities = Activity::whereIn('user_id', $followingUsers)
+            ->orderBy('start_time', 'desc')
+            ->paginate(25);
+
         $latestActivity = Activity::where('user_id', $userId)->orderBy('start_time', 'desc')->first();
         //$followedUsersActivities = array(Activity::where('user_id', $followedUserIds)->get());
 
