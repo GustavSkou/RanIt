@@ -65,8 +65,15 @@ class Activity extends Model
     public function getFormattedDistance()
     {
         $distance = round($this->distance, 2);
-        $formatted = sprintf('%s km', $distance);
+        $formatted = sprintf('%s', $distance);
         return $formatted;
+    }
+    public function getDistanceType()
+    {
+        switch ($this->type) {
+            default:
+                return "km";
+        }
     }
 
     public function getFormattedAverageSpeed()
@@ -80,10 +87,27 @@ class Activity extends Model
                 $minutesPerKm = 60 / $this->average_speed;
                 $minutes = floor($minutesPerKm);
                 $seconds = round(($minutesPerKm - $minutes) * 60);
-                return sprintf('%d:%02d /km', $minutes, $seconds);
+                return sprintf('%d:%02d', $minutes, $seconds);
 
             case 'cycling':
                 return round($this->average_speed, 2);
+
+            default:
+                break;
+        }
+    }
+    public function getSpeedType()
+    {
+        if (!$this->average_speed || $this->average_speed <= 0) {
+            return null;
+        }
+
+        switch ($this->type) {
+            case 'running':
+                return " /km";
+
+            case 'cycling':
+                return " km/h";
 
             default:
                 break;
@@ -107,13 +131,13 @@ class Activity extends Model
         $seconds = $this->duration % 60;
 
         if ($hours > 0) {
-            $formatted = sprintf('%2dh %02dm %02ds', $hours, $minutes, $seconds);
+            $formatted = sprintf('%2d:%02d:%02d', $hours, $minutes, $seconds);
             return $formatted;
         } elseif ($minutes > 0) {
-            $formatted = sprintf('%2dm %02ds', $minutes, $seconds);
+            $formatted = sprintf('%2d:%02d', $minutes, $seconds);
             return $formatted;
         } else {
-            $formatted = sprintf('%2ds', $seconds);
+            $formatted = sprintf('%2d', $seconds);
             return $formatted;
         }
     }
