@@ -14,7 +14,7 @@ class GenerateMapImage extends Command
      *
      * @var string
      */
-    protected $signature = 'map:generate {pointsFilePath} {outputPath} {--width=800} {--height=600}';
+    protected $signature = 'map:generate {pointsFilePath} {outputPath} {--width=550} {--height=211}';
 
     /**
      * The console command description.

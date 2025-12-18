@@ -13,8 +13,8 @@ try {
 }
 
 const options = {
-    width: parseInt(width) || 800,
-    height: parseInt(height) || 600
+    width: parseInt(width) || 550,
+    height: parseInt(height) || 211
 };
 
 generateMapImage(points, outputPath, options)

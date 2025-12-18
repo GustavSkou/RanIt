@@ -1,4 +1,8 @@
-@vite(['resources/css/activity.css', 'resources/js/activityMap.js', 'resources/js/activityChart.js'])
+@vite([
+    'resources/css/activity.css', 
+    'resources/js/activityMap.js', 
+    'resources/js/activityChart.js'
+    ])
 <x-body>
     <x-nav></x-nav>
 

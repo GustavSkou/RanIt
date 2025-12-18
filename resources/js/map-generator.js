@@ -6,8 +6,8 @@ async function generateMapImage(points, outputPath, options = {}) {
     
     // Set viewport size
     await page.setViewport({ 
-        width: options.width || 800, 
-        height: options.height || 600 
+        width: options.width || 550, 
+        height: options.height || 211 
     });
     
     // Create HTML with Leaflet map
@@ -18,8 +18,14 @@ async function generateMapImage(points, outputPath, options = {}) {
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <style>
-            #map { height: 100vh; width: 100vw; }
-            body { margin: 0; padding: 0; }
+            #map { 
+                height: 100vh; 
+                width: 100vw; 
+            }
+            body { 
+                margin: 0; 
+                padding: 0; 
+            }
         </style>
     </head>
     <body>
