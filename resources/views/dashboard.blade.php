@@ -44,6 +44,9 @@
                     <span>-</span>
                     <span>{{ $latestActivity->date() }}</span>
                 </div>
+
+                <!--STREAK WIP--->
+                @if(false)
                 <div>
                     <p>Your Week</p>
                     <div class="activity-streak">
@@ -74,6 +77,8 @@
                             @endfor
                         </div>
                     </div>
+                    @endif
+
                 </div>
             </div>
             @endif

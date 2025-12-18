@@ -1,5 +1,5 @@
 .activity-container {
-    width: 950px;
+    width: 800px;
     height: fit-content;
 
     display: flex;
@@ -9,6 +9,8 @@
 
     /*gap: 20px;*/
 }
+
+
 
 .summary-container {
     background-color: rgb(250, 250, 250);
@@ -53,7 +55,6 @@
 
 }
 
-
 p {
     font-size: small;
 }
@@ -71,6 +72,7 @@ label {
     display: flex;
     flex-direction: row;
     margin-bottom: 15px;
+    
 }
 
 .panel-left div {
@@ -79,14 +81,18 @@ label {
 }
 
 .user-name {
-    padding: 0px;
-    font-size: x-large;
-    border-bottom: 1px black solid;
+    
+    font-size: large;
+    font-weight: 500;
+    border-bottom: 1px solid rgb(200, 200, 200);
+    margin-bottom: 15px;
+    padding: 0 0 5px 0;
 }
 
 .activity-name {
     padding: 0px;
-    font-size: x-large;
+    font-size: large;
+    font-weight: 500;
 }
 
 /* right PANEL */
@@ -95,24 +101,44 @@ label {
     display: flex;
     flex-direction: column;
     gap: 25px;
+    padding-left: 15px;
+    border-left: 1px solid rgb(200, 200, 200);
 }
 
 .stat-ul {
     display: flex;
     flex-direction: row;
+    gap: 20px;
 }
 
 .stat-ul li {
-    margin-right: 32px;
 }
 
+/*STATS*/
 .stat-ul li div {
-    font-size: x-large;
+    font-size: large;
+    font-weight: 450;
+    display: flex;
+    align-items: baseline;
+}
+.stat-ul li label {
+    font-size: x-small;
+    font-weight: 400;
 }
 
 .more-stat-ul li div {
-    font-size: large;
+    font-size: small;
+    font-weight: 600;
 }
+.more-stat-ul li label {
+    font-size: x-small;
+    font-weight: 400;
+}
+.unit {
+    font-size: x-small;
+    vertical-align: text-bottom;
+}
+
 
 .type-icon {
     height: 24px;

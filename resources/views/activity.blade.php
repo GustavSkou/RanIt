@@ -11,17 +11,23 @@
 
         <div class="summary-container">
 
-            <h2 class="user-name">{{ $activity->user->name}}</h2>
+            <a href="{{ route('profile', $activity->user) }}">
+                <h2 class="user-name">{{ $activity->user->name}}</h2>
+            </a>
 
             <div class="top-container">
                 <div class="panel-left">
+                    
                     <div class="icon-container">
-                        <img
-                        src={{ Storage::disk('public')->exists( $activity->user->profile_picture_path) ? asset('storage/' .  $activity->user->profile_picture_path ) : asset('images/' .  $activity->user->profile_picture_path ) }} 
-                        class="profile-icon" 
-                        alt="{{ $activity->user->name }}">
+                        <a href="{{ route('profile', $activity->user) }}">
+                            <img
+                            src={{ Storage::disk('public')->exists( $activity->user->profile_picture_path) ? asset('storage/' .  $activity->user->profile_picture_path ) : asset('images/' .  $activity->user->profile_picture_path ) }} 
+                            class="profile-icon" 
+                            alt="{{ $activity->user->name }}">
+                        </a>
                     </div>
-                    <div>
+                    
+                    <div> <!---->
                         @if ($activity->start_time != null)
                         <span>
                             <time>{{ $activity->start_time }}</time>
@@ -45,14 +51,15 @@
                     <ul class="stat-ul">
                         @if ($activity->distance != null)
                         <li>
-                            <div>{{ $activity->getFormattedDistance() }}</div>
+                            <div>{{ $activity->getFormattedDistance() }} <span class="unit">{{ $activity->getDistanceType() }}</span></div>
                             <label>Distance</label>
                         </li>
                         @endif
                         
                         @if ($activity->average_speed != null)
                         <li>
-                            <div>{{ $activity->getFormattedAverageSpeed() }}</div>
+                            <div>{{ $activity->getFormattedAverageSpeed() }} <span class="unit"> {{$activity->getSpeedType()}}</span></div> 
+                            
                             @switch($activity->type)
                             @case('running')
                             <label>Pace</label>
@@ -70,7 +77,7 @@
                         @if ($activity->duration != null)
                         <li>
                             <div>
-                                {{ $activity->getFormattedDuration() }}
+                                {{ $activity->getFormattedDuration() }} 
                             </div>
                             <label>Moving time</label>
                         </li>
