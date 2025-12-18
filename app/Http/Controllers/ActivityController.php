@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class ActivityController extends Controller
 {
@@ -31,9 +32,6 @@ class ActivityController extends Controller
             ->paginate(25);
 
         $latestActivity = Activity::where('user_id', $userId)->orderBy('start_time', 'desc')->first();
-        //$followedUsersActivities = array(Activity::where('user_id', $followedUserIds)->get());
-
-        //$allActivities = array_merge($activities, $followedUsersActivities);
 
         return view('dashboard', [
             'activities' => $activities,
@@ -64,6 +62,12 @@ class ActivityController extends Controller
     }
 
     public function Edit(Request $request) {}
+
+    public function ActivitiesByWeek(User $user){
+        $activities = Activity::where('user_id', $user->id)->get();
+        $activitiesSortByWeek = $this->sortByWeeks($activities);
+        return view();
+    }
 
     public function Upload(Request $request)
     {
@@ -174,16 +178,25 @@ class ActivityController extends Controller
 
                     $speed = 0;
                     if ($latitude2 != null && $longitude2 != null) {
+
                         $distance = $this->Distance($latitude, $longitude, $latitude2, $longitude2);
                         $totalDistance += $distance;
 
-                        if ($time != null && $time2 != null) {
-                            $speed = $distance / (($time->getTimestamp() - $time2->getTimestamp()) / (60 * 60));
-                            $accumulatedSpeed += $speed;
-                            $speedPoints++;
-
-                            $durationInSeconds += $time->getTimestamp() - $time2->getTimestamp();
+                        if ($time == null || $time2 == null) {
+                            break;
                         }
+
+                        $timeStamp1 = $time->getTimestamp();
+                        $timeStamp2 = $time2->getTimestamp();
+
+                        if ($timeStamp1 == 0 || $timeStamp2 == 0 || $timeStamp1 == null || $timeStamp2 == null) {
+                            break;
+                        }
+
+                        $speed = $distance / (($timeStamp1 - $timeStamp2) / (60 * 60));
+                        $accumulatedSpeed += $speed;
+                        $speedPoints++;
+                        $durationInSeconds += $timeStamp1 - $timeStamp2;
                     }
 
                     if ($elevation != null && $elevation2 != null) {
@@ -263,15 +276,14 @@ class ActivityController extends Controller
         $pointsJson = json_encode($points);
         file_put_contents($pointFileOutputPath, $pointsJson);
 
-
         try {
             // Execute the command
             // This will also save the image in storage
             $response =  Artisan::call('map:generate', [
                 'pointsFilePath' => $pointFileOutputPath,
                 'outputPath' => $mapOutputPath,
-                '--width' => 800,
-                '--height' => 600
+                '--width' => 550,
+                '--height' => 211
             ]);
 
             if ($response) {
@@ -286,6 +298,27 @@ class ActivityController extends Controller
                 unlink($pointFileOutputPath);
             }
         }
+    }
+
+    private function sortByWeeks($activities)
+    {
+        $activitiesArray = $activities->orderBy('start_time', 'desc')->toArray();
+
+        $activitiesSortByWeek = [];
+
+        for ($i = 0; $i < count($activitiesArray); $i++) {
+            $date = new \DateTime($activitiesArray[$i]->start_time);
+            $weekNum = $date->format("W");
+
+            if (!isset($activitiesSortByWeek[$weekNum])) {
+                $activitiesSortByWeek[$weekNum] = [];
+            }
+
+            // push the activity to its week
+            array_push($activitiesSortByWeek[$weekNum], $activitiesArray[$i]);
+        }
+
+        return $activitiesSortByWeek;
     }
 
     private function Distance(float $lat1, float $lon1, float $lat2, float $lon2): float
