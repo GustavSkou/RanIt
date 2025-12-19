@@ -202,6 +202,16 @@ class ActivityController extends Controller
                         'activity_id' => $activityId
                     ];
 
+
+                    /*
+                    
+                        Rewrite this to insert from the allPoints based on the chunksize and how big the array is proportional to the chunksize
+                        when these is no remainder we should insert 
+                        
+                        if (count(array) % chunksize == 0)
+                            insert array
+                    
+                    */
                     array_push($allPoints, $point);
                     array_push($chunkPoints, $point);
 
