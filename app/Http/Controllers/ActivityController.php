@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Activity;
 use App\Models\Point;
-use App\Models\FollowList;
 
 use Exception;
 
@@ -18,20 +17,14 @@ class ActivityController extends Controller
 {
     public function Index()
     {
-        try {
-            $userId = Auth::user()->id;
-            $followingUsers = FollowList::where('user_id', $userId)->pluck('follows_user_id')->toArray();
-            array_push($followingUsers, $userId);
-        } catch (Exception $ex) {
-            $userId = 1;
-            $allUserIds = [];
-        }
+        $user = Auth::user();
+        $users = $this->GetUsers('id');
 
-        $activities = Activity::whereIn('user_id', $followingUsers)
+        $activities = Activity::whereIn('user_id', $users)
             ->orderBy('start_time', 'desc')
             ->paginate(25);
 
-        $latestActivity = Activity::where('user_id', $userId)->orderBy('start_time', 'desc')->first();
+        $latestActivity = Activity::where('user_id', $user)->orderBy('start_time', 'desc')->first();
 
         return view('dashboard', [
             'activities' => $activities,
@@ -63,7 +56,8 @@ class ActivityController extends Controller
 
     public function Edit(Request $request) {}
 
-    public function ActivitiesByWeek(User $user){
+    public function ActivitiesByWeek(User $user)
+    {
         $activities = Activity::where('user_id', $user->id)->get();
         $activitiesSortByWeek = $this->sortByWeeks($activities);
         return view();
@@ -149,7 +143,7 @@ class ActivityController extends Controller
 
         $allPoints = [];
 
-        // chunk the dataset if it is larger than this
+        // chunk the dataset if it is larger than this value
         $chunkSize = 2500;
         $chunkPoints = [];
 
@@ -182,21 +176,14 @@ class ActivityController extends Controller
                         $distance = $this->Distance($latitude, $longitude, $latitude2, $longitude2);
                         $totalDistance += $distance;
 
-                        if ($time == null || $time2 == null) {
-                            break;
+                        $validated = $this->getValidatedTime($time, $time2);
+
+                        if ($validated) {
+                            $speed = $distance / (($validated['timeStamp1'] - $validated['timeStamp2']) / (60 * 60));
+                            $accumulatedSpeed += $speed;
+                            $speedPoints++;
+                            $durationInSeconds += $validated['timeStamp1'] - $validated['timeStamp2'];
                         }
-
-                        $timeStamp1 = $time->getTimestamp();
-                        $timeStamp2 = $time2->getTimestamp();
-
-                        if ($timeStamp1 == 0 || $timeStamp2 == 0 || $timeStamp1 == null || $timeStamp2 == null) {
-                            break;
-                        }
-
-                        $speed = $distance / (($timeStamp1 - $timeStamp2) / (60 * 60));
-                        $accumulatedSpeed += $speed;
-                        $speedPoints++;
-                        $durationInSeconds += $timeStamp1 - $timeStamp2;
                     }
 
                     if ($elevation != null && $elevation2 != null) {
@@ -300,6 +287,25 @@ class ActivityController extends Controller
         }
     }
 
+    private function getValidatedTime($time1, $time2)
+    {
+        if ($time1 == null || $time2 == null) {
+            return false;
+        }
+
+        $timeStamp1 = $time1->getTimestamp();
+        $timeStamp2 = $time2->getTimestamp();
+
+        if ($timeStamp1 == 0 || $timeStamp2 == 0 || $timeStamp1 == null || $timeStamp2 == null || $timeStamp1 >= $timeStamp2) {
+            return false;
+        }
+
+        return [
+            'timeStamp1' => $timeStamp1,
+            'timeStamp2' => $timeStamp2
+        ];
+    }
+
     private function sortByWeeks($activities)
     {
         $activitiesArray = $activities->orderBy('start_time', 'desc')->toArray();
@@ -319,6 +325,19 @@ class ActivityController extends Controller
         }
 
         return $activitiesSortByWeek;
+    }
+
+    /**
+     * Get the Authed and its followed users.
+     * @return array An array of Users
+     */
+    private function GetUsers(string $pluckKey)
+    {
+        $user = Auth::user();
+        $users = $user->following()->get()->pluck($pluckKey)->toArray();
+        array_push($users, $user->id);
+        Log::info($users);
+        return $users;
     }
 
     private function Distance(float $lat1, float $lon1, float $lat2, float $lon2): float
