@@ -116,7 +116,7 @@
     background-color: rgba(237, 237, 237, 0.731);
 }
 
-@media (max-width: 750px) {
+@media (max-width: 950px) {
     .left-side {
         display: none;
     }
