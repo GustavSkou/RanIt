@@ -26,12 +26,25 @@
     <div class="right">
         <a href=""></a>
         <a href=""></a>
-        <a href="{{ route('profile', Auth::user()) }}">
-            <image 
-            src={{ Storage::disk('public')->exists('storage' . Auth::user()->profile_picture_path) ? asset('storage/' . Auth::user()->profile_picture_path ) : asset('images/' . Auth::user()->profile_picture_path ) }}
-            class="nav-profile-icon"
-            alt="{{ Auth::user()->name }}">
-        </a>
+        
+        <div class="profile-dropdown-container">
+            <button id="dropdown-button">
+                <image 
+                src={{ Storage::disk('public')->exists('storage' . Auth::user()->profile_picture_path) ? asset('storage/' . Auth::user()->profile_picture_path ) : asset('images/' . Auth::user()->profile_picture_path ) }}
+                class="nav-profile-icon"
+                alt="{{ Auth::user()->name }}">
+            </button>
+
+            <div class="dropdown-content" id="dropdown-content">
+                <a href="{{ route('profile', Auth::user()) }}">Profile</a>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button class="logout-btn" type="submit">Log out</button>
+                </form>
+
+            </div>
+        </div>
+            
         <a href="/upload">Upload</a>
     </div>
 </nav>
