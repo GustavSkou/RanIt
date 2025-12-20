@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\kudosList;
 
 class Activity extends Model
 {
@@ -47,6 +48,16 @@ class Activity extends Model
     public function points()
     {
         return $this->hasMany(Point::class, 'activity_id', 'id');
+    }
+
+    /*public function kudos()
+    {
+        return $this->hasMany(kudosList::class, 'activity_id,', 'id');
+    }*/
+
+    public function kudos_count()
+    {
+        return kudosList::where('activity_id', $this->id)->count();
     }
 
     public function movingTime()
@@ -126,9 +137,9 @@ class Activity extends Model
 
     private function formatDuration($duration)
     {
-        $hours = floor($this->duration / 3600);
-        $minutes = floor(($this->duration % 3600) / 60);
-        $seconds = $this->duration % 60;
+        $hours = floor($duration / 3600);
+        $minutes = floor(($duration % 3600) / 60);
+        $seconds = $duration % 60;
 
         if ($hours > 0) {
             $formatted = sprintf('%2d:%02d:%02d', $hours, $minutes, $seconds);

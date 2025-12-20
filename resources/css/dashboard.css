@@ -59,6 +59,10 @@ time {
 .stat-ul li div{
     font-size: larger;
 }
+.unit {
+    font-size: small;
+    vertical-align: text-bottom;
+}
 
 .middle-panel {
     display: flex;
@@ -96,6 +100,44 @@ time {
 .map-image {
     height: fit-content;
 }
+
+/**/
+.activity-footer {
+    width: 100%;
+    margin-top: 13px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.kudos {
+    justify-self: end;
+}
+.kudos button{
+    background-color: rgb(233, 233, 233);
+    padding: 9px 14px;
+    
+    justify-items: center;
+    border-radius: 5px;
+}
+.kudos button:hover {
+    background-color: rgb(245, 245, 245);
+    transition: 150ms;
+}
+.kudos button img{
+    height: 14px;
+}
+
+.kudos-display {
+    align-content: center;
+}
+.kudos-display button {
+    font-size: 11px;
+    font-weight: 500;
+    color:rgb(70, 70, 70);
+    
+}
+
 
 @media (max-width: 1050px) {
     main {

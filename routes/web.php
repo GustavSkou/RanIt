@@ -3,6 +3,7 @@
 use App\Http\Controllers\ActivityController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KudosController;
 use App\Http\Controllers\UserController;
 
 Route::get('/', function () {
@@ -34,4 +35,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/follow', [UserController::class, 'follow'])->name('follow');
     Route::post('/unFollow', [UserController::class, 'unFollow'])->name('unFollow');
+
+    Route::post('/kudos', [KudosController::class, 'kudos'])->name('kudos');
 });

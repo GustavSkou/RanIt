@@ -127,7 +127,7 @@
                             @if ($activity->distance != null)
                             <li>
                                 <p>Distance</p>
-                                <div>{{ $activity->GetFormattedDistance() }}</div>
+                                <div>{{ $activity->GetFormattedDistance() }}<span class="unit">{{ $activity->getDistanceType() }}</span></div>
                             </li>
                             @endif
 
@@ -160,9 +160,30 @@
 
                 <div class="image-panel">
                     @if ($activity->map_image_path != null)
-                    <img class="map-image" src="{{ asset('storage/' . $activity->map_image_path) }}" alt="{{ $activity->name }}">
+                    <img 
+                        src="{{ asset('storage/' . $activity->map_image_path) }}"
+                        class="map-image" 
+                        alt="{{ $activity->name }}">
                     @endif
                 </div>
+
+                <footer class="activity-footer">
+                    <div class="kudos-display">
+                        <button>{{ $activity->kudos_count() }} kudos</button>
+                    </div>
+
+                    <form class="kudos" method="POST" action="{{ route('kudos') }}">
+                        @csrf
+                        <input name="user_id" value="{{ $authedUser->id }}" hidden>
+                        <input name="activity_id" value="{{ $activity->id }}" hidden>
+                        <button type="submit">
+                            <img 
+                                src={{ asset("images/icons/social/like.png") }}
+                                alt="Kudos">
+                        </button>
+                    </form>
+                </footer>
+
             </div>
             @endforeach
         </div>
