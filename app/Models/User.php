@@ -85,4 +85,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Activity::class);
     }
+
+    /*public function hasGivenKudos($activityId)
+    {
+        kudosList::where('activity_id', $activityId)->where('user_id')
+    }*/
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use App\Models\kudosList;
 
 class Activity extends Model
@@ -50,10 +51,10 @@ class Activity extends Model
         return $this->hasMany(Point::class, 'activity_id', 'id');
     }
 
-    /*public function kudos()
+    public function kudosByAuth()
     {
-        return $this->hasMany(kudosList::class, 'activity_id,', 'id');
-    }*/
+        return kudosList::where('activity_id', $this->id)->where('user_id', Auth::user()->id)->count();
+    }
 
     public function kudos_count()
     {

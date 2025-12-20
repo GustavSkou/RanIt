@@ -1,4 +1,4 @@
-@vite(['resources\css\dashboard.css', 'resources\css\profile-side-bar.css'])
+@vite(['resources\css\dashboard.css', 'resources\css\profile-side-bar.css', 'resources\js\kudos.js'])
 <x-body>
     <x-nav></x-nav>
     <main>
@@ -172,13 +172,12 @@
                         <button>{{ $activity->kudos_count() }} kudos</button>
                     </div>
 
-                    <form class="kudos" method="POST" action="{{ route('kudos') }}">
+                    <form class="kudos">
                         @csrf
-                        <input name="user_id" value="{{ $authedUser->id }}" hidden>
                         <input name="activity_id" value="{{ $activity->id }}" hidden>
-                        <button type="submit">
+                        <button type="submit" id="kudos-button">
                             <img 
-                                src={{ asset("images/icons/social/like.png") }}
+                                src={{ $activity->kudosByAuth() ? asset("images/icons/social/liked.png") : asset("images/icons/social/like.png") }}
                                 alt="Kudos">
                         </button>
                     </form>
