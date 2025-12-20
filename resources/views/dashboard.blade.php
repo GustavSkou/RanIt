@@ -17,7 +17,9 @@
                             alt="Profile Picture"
                             class="profile-picture">
                     </a>
-                    <h1>{{ $authedUser->name ?? "" }}</h1>
+                    <a href="{{ route('profile', $authedUser) }}">
+                        <h1>{{ $authedUser->name ?? "" }}</h1>
+                    </a>
                 </div>
 
                 <ul>
@@ -97,7 +99,7 @@
                         </a>
                     </div>
                     <div>
-                        <a class="user-name">{{ $activity->user->name ?? 'NO NAME' }}</a>
+                        <a href="{{ route('profile', $activity->user) }}" class="user-name">{{ $activity->user->name ?? 'NO NAME' }}</a>
 
                         @if ($activity->start_time != null)
                         <span>

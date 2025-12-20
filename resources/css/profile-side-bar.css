@@ -33,6 +33,9 @@
     font-size: large;
     font-weight: 500;
 }
+.profile-info h1:hover {
+    color: rgb(19, 89, 230);
+}
 
 .profile-info ul {
     display: flex;
@@ -46,7 +49,6 @@
     width: 55px;
     justify-items: center;
 }
-
 
 .week-summary {
     display: flex;

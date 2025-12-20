@@ -26,8 +26,15 @@ main{
     padding: 0px;
     font-size: x-large;
 }
+.activity-name:hover {
+    color: rgb(19, 89, 230);
+}
 .user-name {
     padding: 0px;
+    font-weight: 500;
+}
+.user-name:hover{
+    color: rgb(19, 89, 230);
 }
 
 p {

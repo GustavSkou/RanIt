@@ -15,6 +15,9 @@ nav a {
     text-decoration: none;
     color: black;
 }
+nav a:hover {
+    color: rgb(230, 75, 19);
+}
 
 nav .left {
     display: flex;
