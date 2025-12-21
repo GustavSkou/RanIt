@@ -26,3 +26,7 @@ button {
 div {
     cursor: default;
 }
+
+a:hover {
+    color: rgb(19, 89, 230);
+}
