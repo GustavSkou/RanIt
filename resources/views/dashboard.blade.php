@@ -38,52 +38,56 @@
                 </ul>
             </div>
 
-            @if ($latestActivity)
+            
             <div class="week-summary">
                 <div class="latest-activity">
                     <p>Latest activity</p>
-                    <span>{{ $latestActivity->name }}</span>
+                    <span>{{ $activities->first()->name}}</span>
                     <span>-</span>
-                    <span>{{ $latestActivity->date() }}</span>
+                    <span>{{ $activities->first()->getFormattedDate() }}</span>
                 </div>
 
                 <!--STREAK WIP--->
-                @if(false)
                 <div>
                     <p>Your Week</p>
                     <div class="activity-streak">
                         <div class="streakFlame-container">
                             <img src="{{ asset('images/icons/ui/fire.png') }}" class="streakFlame">
-                            <div class="streakFlame-text">{{ now()->week() }}</div>
+                            <div class="streakFlame-text">{{ $weeksInRow }}</div>
                         </div>
-                        <div class="streak-day-list">
-                            @for ($i = 0; $i < 7; $i++)
-                            <div class="streak-day">
-                                
-                                
-                                <p>{{ now()->startOfWeek()->addDays($i)->format('l')[0] }}</p>
-                                <div>
-                                    @php
-                                        $authedUser->activities
 
-                                    @endphp
-                                    
-                                    @if (true)
-                                        <image src={{ asset("images/" . $activity->type->path) }}>
-                                    @else
-                                        {{ now()->startOfWeek()->addDays($i)->format('j') }}
+                        <div class="streak-day-list">
+                            @php
+                                $thisWeekActivities = $authedUser->activities->where('start_time', '>=', now()->startOfWeek()->toDateString());
+                                
+                            @endphp
+
+                            @for ($i = 0; $i < 7; $i++)
+                                @php
+                                    // Get activities between the day's start and its end
+                                    $activitesOnDay = $thisWeekActivities->whereBetween('start_time', [
+                                        now()->startOfWeek()->addDays($i)->toDateString() . ' 00:00:00', 
+                                        now()->startOfWeek()->addDays($i)->toDateString() . ' 23:59:59'
+                                        ]
+                                    );
+                                    $activity = $activitesOnDay->first();
+                                @endphp
+                                <div class="streak-day">
+                                    <p>{{ now()->startOfWeek()->addDays($i)->format('l')[0] }}</p>
+                                    @if ($activitesOnDay->count() > 0)
+                                        <div class="streak-day-icon">
+                                            <img src={{ asset("images/" . $activity->icon->path) }}>
+                                        </div>
+                                    @else 
+                                        <div class="streak-day-text">{{ now()->startOfWeek()->addDays($i)->format('j') }}</div>
                                     @endif
-                                    
                                 </div>
-                            </div>
                             @endfor
                         </div>
                     </div>
-                    @endif
 
                 </div>
             </div>
-            @endif
         </div>
 
         <div class="feat">

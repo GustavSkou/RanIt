@@ -30,6 +30,10 @@ class Activity extends Model
         'type' => 'route'
     ];
 
+    protected $casts = [
+        'start_time' => 'datetime',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
@@ -37,6 +41,14 @@ class Activity extends Model
 
     public function date()
     {
+        return [
+            'day' => date('d', strtotime($this->start_time)),
+            'month' => date('m', strtotime($this->start_time)),
+            'year' => date('Y', strtotime($this->start_time))
+        ];
+    }
+
+    public function getFormattedDate() {
         $date = date('M d, Y', strtotime($this->start_time));
         return $date;
     }

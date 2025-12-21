@@ -24,11 +24,13 @@ class ActivityController extends Controller
             ->orderBy('start_time', 'desc')
             ->paginate(25);
 
-        $latestActivity = Activity::where('user_id', $user)->orderBy('start_time', 'desc')->first();
+        $latestActivity = $activities->where('user_id', $user->id)->first();
+        $weeksInRow = $this->WeeksInRow($activities->where('user_id', $user->id));
 
         return view('dashboard', [
             'activities' => $activities,
-            'latestActivity' => $latestActivity
+            'latestActivity' => $latestActivity,
+            'weeksInRow' => $weeksInRow
         ]);
     }
 
@@ -59,8 +61,26 @@ class ActivityController extends Controller
     public function ActivitiesByWeek(User $user)
     {
         $activities = Activity::where('user_id', $user->id)->get();
-        $activitiesSortByWeek = $this->sortByWeeks($activities);
+        $activitiesSortByWeek = $this->sortByYearAndWeek($activities);
         return view();
+    }
+
+    public function WeeksInRow($activities) {
+        $activitesByWeek = $this->sortByYearAndWeek($activities);
+        $weekNum = now()->format("W");
+        $yearNum = now()->format("Y");
+
+        $weeksInRow = 0;
+        while (isset($activitesByWeek[$yearNum][$weekNum]) && count($activitesByWeek[$yearNum][$weekNum]) > 0) {
+            $weeksInRow++;
+            $weekNum--; 
+            
+            if ($weekNum == 0) {
+                $weekNum = 53;  // format return 01-53
+                $yearNum--;
+            }
+        }
+        return $weeksInRow;
     }
 
     public function Upload(Request $request)
@@ -316,25 +336,30 @@ class ActivityController extends Controller
         ];
     }
 
-    private function sortByWeeks($activities)
+    /** 
+     * Return a 3d array of activities sorted by year and week number
+     */
+    private function sortByYearAndWeek($activities)
     {
-        $activitiesArray = $activities->orderBy('start_time', 'desc')->toArray();
+        $sorted = [];
 
-        $activitiesSortByWeek = [];
-
-        for ($i = 0; $i < count($activitiesArray); $i++) {
-            $date = new \DateTime($activitiesArray[$i]->start_time);
+        foreach ($activities as $activity) {
+            $date = $activity->start_time;
             $weekNum = $date->format("W");
+            $yearNum = $date->format("Y");
 
-            if (!isset($activitiesSortByWeek[$weekNum])) {
-                $activitiesSortByWeek[$weekNum] = [];
+            if (!isset($sorted[$yearNum])) {
+                $sorted[$yearNum] = [];
             }
 
-            // push the activity to its week
-            array_push($activitiesSortByWeek[$weekNum], $activitiesArray[$i]);
+            if (!isset($sorted[$yearNum][$weekNum])) {
+                $sorted[$yearNum][$weekNum] = [];
+            }
+
+            array_push($sorted[$yearNum][$weekNum], $activity);
         }
 
-        return $activitiesSortByWeek;
+        return $sorted;
     }
 
     /**
