@@ -42,9 +42,11 @@
             <div class="week-summary">
                 <div class="latest-activity">
                     <p>Latest activity</p>
-                    <span>{{ $activities->first()->name}}</span>
-                    <span>-</span>
-                    <span>{{ $activities->first()->getFormattedDate() }}</span>
+                    <a href={{route('show', $activities->first())}}>
+                        <span>{{ $activities->first()->name}}</span>
+                        <span>-</span>
+                        <span>{{ $activities->first()->getFormattedDate() }}</span>
+                    </a>
                 </div>
 
                 <!--STREAK WIP--->
