@@ -17,6 +17,12 @@ class KudosController extends Controller
         ]);
         $validated['user_id'] = Auth::user()->id;
 
+        if (Activity::find($validated['activity_id'])->user_id == $validated['user_id']) {
+            return response()->json([
+                'success' => false
+            ]);
+        }
+
         if (0 < kudosList::where('user_id', $validated['user_id'])->where('activity_id', $validated['activity_id'])->count()) {
             return $this->RemoveKudos($validated);
         } else {

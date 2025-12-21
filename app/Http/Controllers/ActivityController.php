@@ -144,7 +144,7 @@ class ActivityController extends Controller
         $allPoints = [];
 
         // chunk the dataset if it is larger than this value
-        $chunkSize = 2500;
+        $chunkSize = 1000;
         $chunkPoints = [];
 
         foreach ($xml->trk as $track) {
@@ -306,7 +306,7 @@ class ActivityController extends Controller
         $timeStamp1 = $time1->getTimestamp();
         $timeStamp2 = $time2->getTimestamp();
 
-        if ($timeStamp1 == 0 || $timeStamp2 == 0 || $timeStamp1 == null || $timeStamp2 == null || $timeStamp1 >= $timeStamp2) {
+        if ($timeStamp1 == 0 || $timeStamp2 == 0 || $timeStamp1 == null || $timeStamp2 == null || $timeStamp1 <= $timeStamp2) {
             return false;
         }
 
