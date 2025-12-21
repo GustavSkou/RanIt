@@ -114,6 +114,11 @@
     justify-content: center;
     border-radius: 100%;
     background-color: rgba(255, 96, 38, 0.727);
+    cursor: pointer;
+}
+.streak-day .streak-day-icon:hover{
+    background-color: rgba(255, 96, 38, 0.971);    
+    transition: 250ms;
 }
 .streak-day .streak-day-text {
     height: 24px;

@@ -75,9 +75,11 @@
                                 <div class="streak-day">
                                     <p>{{ now()->startOfWeek()->addDays($i)->format('l')[0] }}</p>
                                     @if ($activitesOnDay->count() > 0)
-                                        <div class="streak-day-icon">
-                                            <img src={{ asset("images/" . $activity->icon->path) }}>
-                                        </div>
+                                        <a href="{{ route('show', $activity) }}">
+                                            <div class="streak-day-icon">        
+                                                <img src={{ asset("images/" . $activity->icon->path) }}>
+                                            </div>
+                                        </a>
                                     @else 
                                         <div class="streak-day-text">{{ now()->startOfWeek()->addDays($i)->format('j') }}</div>
                                     @endif
