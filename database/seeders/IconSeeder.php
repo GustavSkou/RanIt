@@ -18,6 +18,7 @@ class IconSeeder extends Seeder
         $icons = [
             'running'   => $typeIconsPath . 'running.png',
             'cycling'   => $typeIconsPath . 'cycling.png',
+            'VirtualRide' => $typeIconsPath . 'cycling.png',
             'walking '  => $typeIconsPath . 'walking.png',
             'swimming'  => $typeIconsPath . 'swimming.png',
             'workout '  => $typeIconsPath . 'workout.png',
