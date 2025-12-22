@@ -107,7 +107,7 @@
                         
                         @if ($activity->average_speed != null)
                         <li>
-                            <div>{{$activity->movingTime()}}</div>
+                            <div>{{$activity->totalTime()}}</div>
                             <label>Total time</label>
                         </li>
                         @endif

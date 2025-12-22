@@ -45,17 +45,18 @@
                     <a href={{route('show', $activities->first())}}>
                         <span>{{ $activities->first()->name}}</span>
                         <span>-</span>
-                        <span>{{ $activities->first()->getFormattedDate() }}</span>
+                        <span>{{ $activities->first()->start_time->toFormattedDateString() }}</span>
                     </a>
                 </div>
 
                 <!--STREAK WIP--->
-                <div>
-                    <p>Your Week</p>
+                <div class="activity-streak-container">
+                    <p>Your Streak</p>
                     <div class="activity-streak">
                         <div class="streakFlame-container">
                             <img src="{{ asset('images/icons/ui/fire.png') }}" class="streakFlame">
                             <div class="streakFlame-text">{{ $weeksInRow }}</div>
+                            <p>weeks</p>
                         </div>
 
                         <div class="streak-day-list">
@@ -89,7 +90,6 @@
                             @endfor
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -111,7 +111,13 @@
 
                         @if ($activity->start_time != null)
                         <span>
-                            <time>{{ $activity->start_time }}</time>
+                            @if ($activity->start_time > now()) 
+                                <time>Today : {{ $activity->start_time->toTimeString() }}</time>
+                            @elseif($activity->start_time > now()->subDay(1)) 
+                                <time>Yesterday : {{ $activity->start_time->toTimeString() }}</time>
+                            @else
+                                <time>{{ $activity->start_time->toFormattedDateString() }} : {{ $activity->start_time->toTimeString() }}</time>
+                            @endif
                         </span>
                         @endif
 
