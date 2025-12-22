@@ -65,12 +65,18 @@ class ActivityController extends Controller
         return view();
     }
 
-    public function WeeksInRow($activities) {
+    private function WeeksInRow($activities) {
         $activitesByWeek = $this->sortByYearAndWeek($activities);
-        $weekNum = now()->format("W");
-        $yearNum = now()->format("Y");
+        $weekNum = ((int)now()->format("W") )- 1;
+        $yearNum = (int)now()->format("Y");
+
+        if ($weekNum == 0) {
+            $weekNum = 53;
+            $yearNum--;
+        }
 
         $weeksInRow = 0;
+
         while (isset($activitesByWeek[$yearNum][$weekNum]) && count($activitesByWeek[$yearNum][$weekNum]) > 0) {
             $weeksInRow++;
             $weekNum--; 
@@ -327,6 +333,10 @@ class ActivityController extends Controller
         $timeStamp2 = $time2->getTimestamp();
 
         if ($timeStamp1 == 0 || $timeStamp2 == 0 || $timeStamp1 == null || $timeStamp2 == null || $timeStamp1 <= $timeStamp2) {
+            return false;
+        }
+
+        if ($timeStamp1 - $timeStamp2 > 1) {
             return false;
         }
 
