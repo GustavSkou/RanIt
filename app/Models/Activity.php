@@ -48,11 +48,6 @@ class Activity extends Model
         ];
     }
 
-    public function getFormattedDate() {
-        $date = date('M d, Y', strtotime($this->start_time));
-        return $date;
-    }
-
     public function icon()
     {
         return $this->belongsTo(Icon::class, 'type', 'name');
@@ -73,7 +68,7 @@ class Activity extends Model
         return kudosList::where('activity_id', $this->id)->count();
     }
 
-    public function movingTime()
+    public function totalTime()
     {
         $firstPoint = $this->points->first();
         $lastPoint = $this->points->last();
