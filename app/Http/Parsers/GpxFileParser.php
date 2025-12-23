@@ -66,7 +66,6 @@ Class GpxFileParser implements IFileParser {
                         //cadence and power can be added here later
                     }
 
-
                     $distance = $this->setDistance($latitude, $longitude, $latitude2, $longitude2);
                     $validated = $this->getValidatedTime($time, $time2);
 
@@ -90,22 +89,9 @@ Class GpxFileParser implements IFileParser {
                         'activity_id' => $activityId
                     ];
 
-
-                    /*
-                    
-                        Rewrite this to insert from the allPoints based on the chunksize and how big the array is proportional to the chunksize
-                        when these is no remainder we should insert 
-                        
-                        if (count(array) % chunksize == 0)
-                            insert array
-                    
-                    */
                     array_push($allPoints, $point);
-                    //array_push($chunkPoints, $point);
 
-                    if (count($allPoints) % $chunkSize == 0) {
-                        Point::insert(array_slice($allPoints, count($allPoints) - $chunkSize));
-                    }
+                    $this->insertChunk($allPoints, $chunkSize);
 
                     $latitude2 = $latitude;
                     $longitude2 = $longitude;
@@ -115,10 +101,7 @@ Class GpxFileParser implements IFileParser {
             }
         }
 
-        // insert the rest of the points
-        if (count($allPoints) % $chunkSize != 0) {
-            Point::insert(array_slice($allPoints, count($allPoints) - (count($allPoints) % $chunkSize)));
-        }
+        $this->insertLastChunk($allPoints, $chunkSize);
 
         return [
             'distance' => $this->totalDistance,
@@ -131,7 +114,26 @@ Class GpxFileParser implements IFileParser {
         ];
     }
 
-    function setDistance($latitude1, $longitude1, $latitude2, $longitude2) {
+    private function insertChunk($allPoints, $chunkSize) {
+        if (count($allPoints) % $chunkSize == 0) {
+            Point::insert(array_slice($allPoints, count($allPoints) - $chunkSize));
+        }
+    }
+
+    /**
+     * insert the rest of the points
+     * by subtracting the remainder from the total count, we then get the starting index for the last slice
+     * 6500 % 1000 = 500
+     * 6500 - 500 = 6000
+     * so we insert from index 6000 to the end 6500
+     */
+    private function insertLastChunk($allPoints, $chunkSize) {
+        if (count($allPoints) % $chunkSize != 0) {
+            Point::insert(array_slice($allPoints, count($allPoints) - (count($allPoints) % $chunkSize)));
+        }
+    }
+
+    private function setDistance($latitude1, $longitude1, $latitude2, $longitude2) {
         if ($latitude2 == null || $longitude2 == null) {
             return 0;
         }
