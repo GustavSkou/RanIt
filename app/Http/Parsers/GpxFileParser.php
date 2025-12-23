@@ -7,14 +7,23 @@ use App\Models\Point;
 use App\Console\Commands\Distance;
 use Illuminate\Support\Facades\Auth;
 
-Class GpxFileParser extends IFileParser {
+Class GpxFileParser implements IFileParser {
+
+    private $totalDistance = 0;
+    private $accumulatedSpeed = 0;
+    private $accumulatedHeartRate = 0;
+    private $durationInSeconds = 0;
+    private $totalElevation = 0;
+    private $speedPoints = 0;
+    private $hrPoints = 0;
+
     public function parseFileType($file) 
     {
         $contentString = $file->get();
         $xml = simplexml_load_string($contentString);
         return $xml;
     }
-        
+
     public function createActivity($xml): Activity
     {
         return Activity::create([
@@ -25,15 +34,7 @@ Class GpxFileParser extends IFileParser {
     }
 
     public function createPoints($xml, $activityId)
-    {
-        $totalDistance = 0;
-        $accumulatedSpeed = 0;
-        $accumulatedHeartRate = 0;
-        $durationInSeconds = 0;
-        $totalElevation = 0;
-
-        $speedPoints = 0;
-        $hrPoints = 0;
+    {        
         $latitude2 = null;
         $longitude2 = null;
         $time2 = null;
@@ -59,46 +60,26 @@ Class GpxFileParser extends IFileParser {
                         $firstTime = $time;
                     }
 
-                    $heartRate = null;
                     if (isset($point->extensions)) {
-
-
                         $gpxtpx = $point->extensions->children('gpxtpx', true);
-                        if (isset($gpxtpx->TrackPointExtension->hr)) {
-                            $heartRate = (int) $gpxtpx->TrackPointExtension->hr;
-                            $accumulatedHeartRate += $heartRate;
-                            $hrPoints++;
-                        }
-
-
+                        $heartRate = $this->setHeartRate($gpxtpx);  // are nullable
+                        //cadence and power can be added here later
                     }
 
-                    function getHeartRate(){}
 
-                    $speed = 0;
-                    if ($latitude2 != null && $longitude2 != null) {
+                    $distance = $this->setDistance($latitude, $longitude, $latitude2, $longitude2);
+                    $validated = $this->getValidatedTime($time, $time2);
 
-                        $distance = Distance::Distance($latitude, $longitude, $latitude2, $longitude2);
-                        $totalDistance += $distance;
-
-                        $validated = $this->getValidatedTime($time, $time2);
-
-                        if ($validated) {
-                            $speed = $distance / (($validated['timeStamp1'] - $validated['timeStamp2']) / (60 * 60));
-                            $accumulatedSpeed += $speed;
-                            $speedPoints++;
-                            $durationInSeconds += $validated['timeStamp1'] - $validated['timeStamp2'];
-                        }
+                    if ($validated) {
+                        $speed = $distance / (($validated['timeStamp1'] - $validated['timeStamp2']) / (60 * 60));
+                        $this->accumulatedSpeed += $speed;
+                        $this->speedPoints++;
+                        $this->durationInSeconds += $validated['timeStamp1'] - $validated['timeStamp2'];
                     }
 
-                    if ($elevation != null && $elevation2 != null) {
-                        // If we are going up, add the elevation diff
-                        if ($elevation > $elevation2) {
-                            $totalElevation += ($elevation - $elevation2);
-                        }
-                    }
+                    $totalElevation = $this->setElevation($elevation, $elevation2, $totalElevation);
 
-                    $point = [
+                    $point =[
                         'latitude' => $latitude,
                         'longitude' => $longitude,
                         'elevation' => $elevation,
@@ -120,11 +101,10 @@ Class GpxFileParser extends IFileParser {
                     
                     */
                     array_push($allPoints, $point);
-                    array_push($chunkPoints, $point);
+                    //array_push($chunkPoints, $point);
 
-                    if (count($chunkPoints) >= $chunkSize) {
-                        Point::insert($chunkPoints);
-                        $chunkPoints = [];
+                    if (count($allPoints) % $chunkSize == 0) {
+                        Point::insert(array_slice($allPoints, count($allPoints) - $chunkSize));
                     }
 
                     $latitude2 = $latitude;
@@ -136,18 +116,73 @@ Class GpxFileParser extends IFileParser {
         }
 
         // insert the rest of the points
-        if (count($chunkPoints) > 0) {
-            Point::insert($chunkPoints);
+        if (count($allPoints) % $chunkSize != 0) {
+            Point::insert(array_slice($allPoints, count($allPoints) - (count($allPoints) % $chunkSize)));
         }
 
         return [
-            'distance' => $totalDistance,
-            'duration' => $durationInSeconds,
-            'elevation' => $totalElevation,
+            'distance' => $this->totalDistance,
+            'duration' => $this->durationInSeconds,
+            'elevation' => $this->totalElevation,
             'start_time' => $firstTime,
-            'average_speed' => $speedPoints > 0 ? $accumulatedSpeed / $speedPoints : null,
-            'average_heart_rate' => $hrPoints > 0 ? $accumulatedHeartRate / $hrPoints : null,
+            'average_speed' => $this->speedPoints > 0 ? $this->accumulatedSpeed / $this->speedPoints : null,
+            'average_heart_rate' => $this->hrPoints > 0 ? $this->accumulatedHeartRate / $this->hrPoints : null,
             'points' => $allPoints
         ];
     }
+
+    function setDistance($latitude1, $longitude1, $latitude2, $longitude2) {
+        if ($latitude2 == null || $longitude2 == null) {
+            return 0;
+        }
+
+        $distance = Distance::Distance($latitude1, $longitude1, $latitude2, $longitude2);
+        $this->totalDistance += $distance;
+        return $distance;
     }
+
+    private function getValidatedTime($time1, $time2)
+    {
+        if ($time1 == null || $time2 == null) {
+            return false;
+        }
+
+        $timeStamp1 = $time1->getTimestamp();
+        $timeStamp2 = $time2->getTimestamp();
+
+        if ($timeStamp1 == 0 || $timeStamp2 == 0 || $timeStamp1 == null || $timeStamp2 == null || $timeStamp1 <= $timeStamp2) {
+            return false;
+        }
+
+        if ($timeStamp1 - $timeStamp2 > 1) {
+            return false;
+        }
+
+        return [
+            'timeStamp1' => $timeStamp1,
+            'timeStamp2' => $timeStamp2
+        ];
+    }
+
+    private function setElevation($elevation, $elevation2, &$totalElevation) {
+        if ($elevation == null || $elevation2 == null) {
+            return $totalElevation;
+        } 
+        
+        // If we are going up, add the elevation diff
+        if ($elevation > $elevation2) {
+            $totalElevation += ($elevation - $elevation2);
+        }
+        
+        return $totalElevation;
+    }
+
+    private function setHeartRate($gpxtpx) {
+        if (isset($gpxtpx->TrackPointExtension->hr)) {
+            return (int) $gpxtpx->TrackPointExtension->hr;
+        }
+        return null;
+    }
+}
+
+

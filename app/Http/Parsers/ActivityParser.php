@@ -27,7 +27,7 @@ Class ActivityParser {
                 throw new \Exception('Unsupported file type: ' . $file->getClientOriginalExtension());
         }
 
-        $fileContentString = $this->fileParser->parseFileType($file->get());
+        $fileContentString = $this->fileParser->parseFileType($file);
 
         $activity = $this->fileParser->createActivity($fileContentString);
 
@@ -42,5 +42,10 @@ Class ActivityParser {
         $activity->duration = $pointsSummary['duration'];
         $activity->elevation = $pointsSummary['elevation'];
         $activity->save();
+
+        return [
+            'activity' => $activity,
+            'points' => $pointsSummary['points']
+        ];
     }
 }
