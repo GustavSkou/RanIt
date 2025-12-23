@@ -41,12 +41,16 @@
             
             <div class="week-summary">
                 <div class="latest-activity">
+                @if ($activities->isEmpty())
+                    <p>No activities yet</p>
+                @else
                     <p>Latest activity</p>
                     <a href={{route('show', $activities->first())}}>
                         <span>{{ $activities->first()->name}}</span>
                         <span>-</span>
                         <span>{{ $activities->first()->start_time->toFormattedDateString() }}</span>
                     </a>
+                @endif
                 </div>
 
                 <!--STREAK WIP--->
