@@ -9,18 +9,7 @@ use Symfony\Component\Process\Process;
 
 class GenerateMapImage extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'map:generate {pointsFilePath} {outputPath} {--width=550} {--height=211}';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
     protected $description = 'Generate map image from GPS points';
 
     /**
