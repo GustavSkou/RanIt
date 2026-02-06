@@ -5,8 +5,7 @@ namespace App\Http\Parsers;
 use App\Models\Activity;
 use App\Models\Point;
 use Illuminate\Support\Facades\Auth;
-
-use function App\Http\Helpers\distance;
+use App\Http\Utils\GeoUtils;
 
 Class GpxFileParser implements IFileParser {
 
@@ -139,7 +138,7 @@ Class GpxFileParser implements IFileParser {
             return 0;
         }
 
-        $distance = distance($latitude1, $longitude1, $latitude2, $longitude2);
+        $distance = GeoUtils::distance($latitude1, $longitude1, $latitude2, $longitude2);
         $this->totalDistance += $distance;
         return $distance;
     }

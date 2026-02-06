@@ -1,22 +1,24 @@
-<?php 
+<?php
 
-namespace App\Http\Helpers;
+namespace App\Http\Utils;
 
-/**
- * 
- * Calucate the shortest distance between two points
- * 
-*/
-function distance($latitude1, $longitude1, $latitude2, $longitude2): float
+class GeoUtils
 {
-    return haversine($latitude1, $longitude1, $latitude2, $longitude2);
+    /**
+     * Calculate the shortest distance between two points.
+     *
+     * Returns KM.
+     */
+    public static function distance($latitude1, $longitude1, $latitude2, $longitude2): float
+    {
+        return self::haversine($latitude1, $longitude1, $latitude2, $longitude2);
+    }
 
     /**
      * Calculates the shortest distance between two points
-     * While assuming that the earth is perfectly round.
-     * Returns KM
+     * while assuming that the earth is perfectly round.
      */
-    function haversine($lat1, $lon1, $lat2, $lon2)
+    private static function haversine($lat1, $lon1, $lat2, $lon2): float
     {
         // Earth radius
         $R = 6371.0088;
