@@ -4,7 +4,7 @@ h1 {
 
 .container {
     
-    width: 1200px;
+    width: fit-content;
     margin: 35 auto;
     background-color: rgb(250, 250, 250);
     display: flex;
@@ -21,4 +21,9 @@ h1 {
 .profile-icon {
     width: 125px;
     border-radius: 100%;
+}
+
+.profile-bottom {
+    display: grid;
+    grid-template-columns: auto 250px;
 }

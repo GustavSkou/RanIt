@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Activity;
 use Illuminate\Support\Facades\Log;
 
 use App\Models\FollowList;
@@ -13,7 +14,14 @@ class UserController extends Controller
 {
     function showProfile(User $user)
     {
-        return view('profile')->with('user', $user);
+        $activities = Activity::where('user_id', $user->id)
+            ->orderBy('start_time', 'desc')
+            ->paginate(25);
+        
+        return view('profile', [
+            'activities' => $activities,
+            'user' => $user
+        ]);
     }
 
     function showEdit(User $user)
