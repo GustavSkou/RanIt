@@ -16,7 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('user_id')->constrained('users');
             $table->foreignId('activity_id')->constrained('activities');
-            $table->foreignId('all_time_best_category_id');    // distance in meters
+            $table->foreignId('sport_id')->constrained('sports');
+            $table->integer('distance');        // distance in meters
             $table->integer('duration');        // duration in seconds
         });
     }
